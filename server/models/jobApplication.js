@@ -1,5 +1,5 @@
 // server/models/jobApplication.js
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 const jobApplicationSchema = new mongoose.Schema(
   {
@@ -8,8 +8,9 @@ const jobApplicationSchema = new mongoose.Schema(
     dateApplied: { type: Date, required: true },
     status: { type: String, required: true },
     source: { type: String, required: false },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   },
-  { collection: "JobApplications" }
+  { collection: 'JobApplications' }
 )
 
-export default mongoose.model("JobApplication", jobApplicationSchema)
+export default mongoose.model('JobApplication', jobApplicationSchema)
