@@ -1,11 +1,16 @@
-import dotenv from "dotenv"
-import mongoose from "mongoose"
+import dotenv from 'dotenv'
+import mongoose from 'mongoose'
 
 dotenv.config()
 
-const mongoURI = process.env.MONGO_URI
+// Determine the correct URI based on the environment
+const mongoURI =
+  process.env.NODE_ENV === 'test'
+    ? process.env.MONGO_URI_TEST
+    : process.env.MONGO_URI
+console.log(`Connecting to MongoDB: ${mongoURI}`)
 
 mongoose
   .connect(mongoURI)
-  .then(() => console.log("MongoDB connected"))
+  .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log(err))
