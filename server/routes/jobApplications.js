@@ -6,18 +6,30 @@ import User from "../models/user.js"
 const router = express.Router()
 
 // POST /api/job-applications to create a new job application
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
   try {
-    const newJobApplication = new JobApplication(req.body)
+    const userId = req.user.userId // Extracted from JWT in authenticateToken middleware
+
+    // Create a new job application with user ID from the authenticated user
+    const newJobApplication = new JobApplication({
+      ...req.body,
+      user: userId, // Assign the authenticated user's ID to the job application
+    })
+
     const savedJobApplication = await newJobApplication.save()
-    const userId = req.body.user
+
+    // Update the User document to include the new job application ID in their jobApplications array
     await User.findByIdAndUpdate(userId, {
       $push: { jobApplications: savedJobApplication._id },
     })
-    res.status(201).send({ message: "Job application created successfully" })
+
+    res.status(201).send({
+      message: "Job application created successfully",
+      jobApplication: savedJobApplication,
+    })
   } catch (error) {
     console.log(error)
-    res.status(400).send({ messaage: error })
+    res.status(400).send({ message: "Error creating job application" })
   }
 })
 
@@ -32,45 +44,73 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 })
 
-// GET /api/job-applications/:id - Get a single job application by ID
-router.get("/:id", async (req, res) => {
+// GET /api/job-applications/:id - Get a single job application by ID for the authenticated user
+router.get("/:id", authenticateToken, async (req, res) => {
   try {
-    const jobApplication = await JobApplication.findById(req.params.id)
-    if (jobApplication) {
-      res.status(200).json(jobApplication)
-    } else {
-      res.status(404).json({ message: "Job application not found" })
+    const { id } = req.params
+    const userId = req.user.userId // Extracted from JWT
+
+    const jobApplication = await JobApplication.findOne({
+      _id: id,
+      user: userId,
+    })
+    if (!jobApplication) {
+      return res
+        .status(404)
+        .send({ message: "Job application not found or access denied" })
     }
+
+    res.json(jobApplication)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).send({ message: error.message })
   }
 })
 
-// PUT /api/job-applications/:id - Update a job application by ID
-router.put("/:id", async (req, res) => {
+// PUT /api/job-applications/:id - Update a job application by ID for the authenticated user
+router.put("/:id", authenticateToken, async (req, res) => {
   try {
-    const updatedJobApplication = await JobApplication.findByIdAndUpdate(
-      req.params.id,
+    const { id } = req.params
+    const userId = req.user.userId // Extracted from JWT
+
+    const jobApplication = await JobApplication.findOneAndUpdate(
+      { _id: id, user: userId },
       req.body,
       { new: true }
     )
-    res.status(200).json(updatedJobApplication)
+    if (!jobApplication) {
+      return res
+        .status(404)
+        .send({ message: "Job application not found or access denied" })
+    }
+
+    res.json({
+      message: "Job application updated successfully",
+      jobApplication,
+    })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).send({ message: error.message })
   }
 })
 
-// DELETE /api/job-applications/:id - Delete a job application by ID
-router.delete("/:id", async (req, res) => {
+// DELETE /api/job-applications/:id - Delete a job application by ID for the authenticated user
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
-    const jobApplication = await JobApplication.findByIdAndDelete(req.params.id)
-    if (jobApplication) {
-      res.status(200).json({ message: "Job application deleted successfully" })
-    } else {
-      res.status(404).json({ message: "Job application not found" })
+    const { id } = req.params
+    const userId = req.user.userId // Extracted from JWT
+
+    const jobApplication = await JobApplication.findOneAndDelete({
+      _id: id,
+      user: userId,
+    })
+    if (!jobApplication) {
+      return res
+        .status(404)
+        .send({ message: "Job application not found or access denied" })
     }
+
+    res.json({ message: "Job application deleted successfully" })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).send({ message: error.message })
   }
 })
 
