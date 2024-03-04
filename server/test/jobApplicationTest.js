@@ -1,7 +1,7 @@
 // test/jobApplicationTests.js
-import server from "../index.js" // Import your Express app
+import server from "../index.js" // Import Express app
 import { expect } from "chai"
-import JobApplication from "../models/jobApplication.js" // Adjust path as necessary
+import JobApplication from "../models/jobApplication.js"
 import supertest from "supertest"
 
 const request = supertest(server)
