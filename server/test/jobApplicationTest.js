@@ -14,14 +14,14 @@ describe("Job Applications", () => {
     // Create a test user
     await request.post("/api/users/signup").send({
       username: "testUser",
-      password: "testPass",
+      password: "ValidPassword123!",
       email: "test@mail.com",
     })
 
     // Authenticate the test user
     const authResponse = await request.post("/api/users/signin").send({
       username: "testUser",
-      password: "testPass",
+      password: "ValidPassword123!",
     })
 
     token = authResponse.body.token

@@ -40,13 +40,15 @@ router.post("/signin", async (req, res) => {
     const user = await User.findOne({ username })
 
     if (!user) {
-      return res.status(401).json({ message: "Authentication failed" })
+      return res
+        .status(401)
+        .json({ message: "Authentication failed. User does not exist." })
     }
 
     // Verify password
     const isValid = await bcrypt.compare(password, user.password)
     if (!isValid) {
-      return res.status(401).json({ message: "Authentication failed" })
+      return res.status(401).json({ message: "Authentication failed. Invalid password." })
     }
 
     // Generate JWT
