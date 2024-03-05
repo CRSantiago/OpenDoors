@@ -1,0 +1,198 @@
+openapi: 3.0.0
+info:
+  title: User API
+  description: API for managing users
+  version: '1.0'
+paths:
+  /users/signup:
+    post:
+      summary: Register a new user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        201:
+          description: User created successfully
+  /users/signin:
+    post:
+      summary: User sign-in
+      tags:
+        - Users
+      description: Authenticates a user and returns a JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The user's username.
+                password:
+                  type: string
+                  description: The user's password.
+                  format: password
+              required:
+                - username
+                - password
+      responses:
+        200:
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Authentication successful
+                  userId:
+                    type: string
+                    example: 5f8d04fee618f1768438157e
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  expiresIn:
+                    type: integer
+                    example: 3600
+        401:
+          description: Authentication failed due to incorrect username or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Authentication failed. User does not exist or Invalid password.
+        500:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: An error occurred during the authentication process.
+  paths:
+  /users/update:
+    put:
+      summary: Update user information
+      tags:
+        - Users
+      description: Updates the authenticated user's username and email.
+      security:
+        - bearerAuth: [] # Assumes you have defined bearerAuth under the components.securitySchemes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: The new username for the user.
+                email:
+                  type: string
+                  description: The new email address for the user.
+              required:
+                - username
+                - email
+      responses:
+        200:
+          description: User information updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    example: 5f8d04fee618f1768438157e
+                  username:
+                    type: string
+                    example: newUsername
+                  email:
+                    type: string
+                    example: newemail@example.com
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User not found.
+        500:
+          description: Server error occurred while updating user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Error updating user information.
+  /users/{id}:
+    delete:
+      summary: Delete user
+      tags:
+        - Users
+      description: Deletes the authenticated user and their associated job applications.
+      security:
+        - bearerAuth: [] # Assumes you have defined bearerAuth under the components.securitySchemes
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The user ID.
+      responses:
+        200:
+          description: User and their job applications deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User and their job applications deleted successfully.
+        403:
+          description: Unauthorized to delete this user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized to delete this user.
+        500:
+          description: Server error occurred while deleting the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: An error occurred while deleting the user.
