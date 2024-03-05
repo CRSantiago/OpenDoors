@@ -319,6 +319,23 @@ components:
         status:
           type: string
           example: Applied
+        source:
+          type: string
+          example: LinkedIn
+        location:
+          type: string
+          example: Remote
+        contactEmail:
+          type: string
+          example:
+        contactPhone:
+          type: string
+          example:
+        interviewDates:
+          type: array
+          items:
+            type: string
+          example: ['2024-03-01', '2024-03-02']
         user:
           type: string
           example: 5f8d04fee618f1768438157e
