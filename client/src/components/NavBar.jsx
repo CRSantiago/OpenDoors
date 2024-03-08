@@ -1,19 +1,24 @@
-import React from "react"
-import { Link } from "react-router-dom"
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Navbar = () => {
   return (
     <nav>
-      <ul style={{ listStyleType: "none", padding: 0 }}>
-        <li style={{ display: "inline", marginRight: "20px" }}>
-          <Link to="/">Landing</Link>
+      <ul className="flex justify-between items-center mb-1 h-12">
+        <li>
+          <h2>OpenDoors</h2>
         </li>
-        <li style={{ display: "inline", marginRight: "20px" }}>
-          <Link to="/contributions">Contributions</Link>
-        </li>
-        <li style={{ display: "inline" }}>
-          <Link to="/auth">Login/Register</Link>
-        </li>
+        <div className="flex">
+          <li className="mr-5 hover:underline">
+            <Link to="/">Home</Link>
+          </li>
+          <li className="mr-5 hover:underline">
+            <Link to="/contributions">Contributions</Link>
+          </li>
+          <li className="mr-5 hover:underline">
+            <Link to="/auth">Login/Register</Link>
+          </li>
+        </div>
       </ul>
     </nav>
   )
