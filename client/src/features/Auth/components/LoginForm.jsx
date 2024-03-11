@@ -1,19 +1,26 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FormInput, FormLabel, FormButton } from '../../components'
 import { submitLoginForm } from '../api'
+import { useAuth } from '../../../AuthContext'
 
 const LoginForm = () => {
+  // Get the login function from the AuthContext
+  const { login } = useAuth()
+  const navigate = useNavigate()
+
+  // Store form data in state
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   })
 
+  // Store field errors to display in the form
   const [fieldErrors, setFieldErrors] = useState({
     username: '',
     password: '',
   })
 
-  const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
   const handleChange = (e) => {
@@ -24,18 +31,22 @@ const LoginForm = () => {
     })
   }
 
+  // Handle the response from the server
   const handleFormResponse = (response) => {
     if (response.token) {
-      setSuccessMessage('Login successful')
-      setErrorMessage('')
-      setFieldErrors({ username: '', password: '' })
+      login(response) // Store user object in context
+      setErrorMessage('') // Clear any previous error messages
+      setFieldErrors({ username: '', password: '' }) // Clear any previous field errors
+      navigate('/dashboard') // Redirect to the dashboard
     } else if (response.message.includes('Authentication failed')) {
       if (response.message.includes('User does not exist')) {
+        // Set the username error if the user does not exist
         setFieldErrors((errors) => ({
           ...errors,
           username: 'User does not exist',
         }))
       } else {
+        // Clear the username error if the user exists
         setFieldErrors((errors) => ({
           ...errors,
           username: '',
@@ -43,11 +54,13 @@ const LoginForm = () => {
       }
 
       if (response.message.includes('Invalid password')) {
+        // Set the password error if the password is invalid
         setFieldErrors((errors) => ({
           ...errors,
           password: 'Invalid password',
         }))
       } else {
+        // Clear the password error if the password is valid
         setFieldErrors((errors) => ({
           ...errors,
           password: '',
@@ -72,7 +85,6 @@ const LoginForm = () => {
         className="flex flex-col w-1/3 bg-neutral-100 p-10 shadow-lg rounded-lg"
         onSubmit={handleSubmit}
       >
-        {successMessage && <h3 className="text-green-500">{successMessage}</h3>}
         {errorMessage && <h3 className="text-red-500">{errorMessage}</h3>}
         <h2 className="text-2xl font-bold mb-4">Login</h2>
         <FormLabel htmlFor="username" text="Username" />

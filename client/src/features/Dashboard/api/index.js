@@ -1,0 +1,1 @@
+export { getAllJobApplications } from './getAllJobApplications'
