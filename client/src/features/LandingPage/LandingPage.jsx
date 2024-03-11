@@ -53,7 +53,7 @@ const LandingPage = () => {
         </p>
         <a
           href="/auth"
-          class="bg-indigo-500 text-white font-bold py-2 px-4 rounded hover:bg-indigo-600"
+          className="bg-indigo-500 text-white font-bold py-2 px-4 rounded hover:bg-indigo-600"
         >
           Sign Up Now
         </a>
