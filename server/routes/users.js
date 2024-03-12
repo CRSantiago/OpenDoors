@@ -1,17 +1,17 @@
 //
-import express from "express"
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
-import User from "../models/user.js"
-import JobApplication from "../models/jobApplication.js"
-import validateUserInput from "../middleware/validateUserInput.js"
-import authenticateToken from "../middleware/authenticateToken.js"
+import express from 'express'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import User from '../models/user.js'
+import JobApplication from '../models/jobApplication.js'
+import validateUserInput from '../middleware/validateUserInput.js'
+import authenticateToken from '../middleware/authenticateToken.js'
 
 const router = express.Router()
 const JWT_SECRET = process.env.JWT_SECRET
 
 // POST /users/signup - User sign-up
-router.post("/signup", validateUserInput, async (req, res) => {
+router.post('/signup', validateUserInput, async (req, res) => {
   try {
     const { username, password, email } = req.body
 
@@ -27,14 +27,14 @@ router.post("/signup", validateUserInput, async (req, res) => {
     const savedUser = await user.save()
     res
       .status(201)
-      .json({ message: "User created successfully", userId: savedUser._id })
+      .json({ message: 'User created successfully', userId: savedUser._id })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 })
 
 // POST /users/signin - User sign-in
-router.post("/signin", async (req, res) => {
+router.post('/signin', async (req, res) => {
   try {
     const { username, password } = req.body
     const user = await User.findOne({ username })
@@ -42,26 +42,30 @@ router.post("/signin", async (req, res) => {
     if (!user) {
       return res
         .status(401)
-        .json({ message: "Authentication failed. User does not exist." })
+        .json({ message: 'Authentication failed. User does not exist.' })
     }
 
     // Verify password
     const isValid = await bcrypt.compare(password, user.password)
     if (!isValid) {
-      return res.status(401).json({ message: "Authentication failed. Invalid password." })
+      return res
+        .status(401)
+        .json({ message: 'Authentication failed. Invalid password.' })
     }
 
     // Generate JWT
     const token = jwt.sign(
       { userId: user._id, username: user.username },
       JWT_SECRET,
-      { expiresIn: "1h" } // Token expires in 1 hour
+      { expiresIn: '1h' } // Token expires in 1 hour
     )
 
     // Respond with user details (omit sensitive information)
     res.json({
-      message: "Authentication successful",
+      message: 'Authentication successful',
       userId: user._id,
+      username: user.username,
+      email: user.email,
       token: token,
       expiresIn: 3600, // 1 hour in seconds
     })
@@ -71,7 +75,7 @@ router.post("/signin", async (req, res) => {
 })
 
 router.put(
-  "/update",
+  '/update',
   authenticateToken,
   validateUserInput,
   async (req, res) => {
@@ -86,7 +90,7 @@ router.put(
         { new: true }
       )
       if (!updatedUser) {
-        return res.status(404).send({ message: "User not found." })
+        return res.status(404).send({ message: 'User not found.' })
       }
 
       // Return the updated user information (excluding sensitive data like passwords)
@@ -97,13 +101,13 @@ router.put(
       })
     } catch (error) {
       console.log(error)
-      res.status(500).send({ message: "Error updating user information." })
+      res.status(500).send({ message: 'Error updating user information.' })
     }
   }
 )
 
 // DELETE /users/:id - Delete user
-router.delete("/:id", authenticateToken, async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId
     const { id } = req.params
@@ -111,16 +115,16 @@ router.delete("/:id", authenticateToken, async (req, res) => {
     if (userId !== id) {
       return res
         .status(403)
-        .json({ message: "Unauthorized to delete this user" })
+        .json({ message: 'Unauthorized to delete this user' })
     }
 
     // Delete user's job applications first
     await JobApplication.deleteMany({ user: userId })
-    console.log("deleted job applications for users")
+    console.log('deleted job applications for users')
     // Then delete the user
     await User.findByIdAndDelete(userId)
     res.json({
-      message: "User and their job applications deleted successfully",
+      message: 'User and their job applications deleted successfully',
     })
   } catch (error) {
     res.status(500).json({ message: error.message })
