@@ -5,10 +5,13 @@ import { useAuth } from '../../AuthContext'
 
 const Dashboard = () => {
   const [jobApplications, setJobApplications] = useState([])
-  useEffect(() => {
+  function fetchUserData() {
     getAllJobApplications()
       .then((data) => setJobApplications(data))
       .catch((error) => console.error(error))
+  }
+  useEffect(() => {
+    fetchUserData()
   }, [])
   const { user } = useAuth()
   return (
@@ -16,7 +19,10 @@ const Dashboard = () => {
       <h1 className="text-center font-semibold text-xl mb-5 mt-3">
         Welcome, {user.username}. Your next opportunity awaits!
       </h1>
-      <JobApplicationTable applications={jobApplications} />
+      <JobApplicationTable
+        applications={jobApplications}
+        fetchUserData={fetchUserData}
+      />
     </div>
   )
 }

@@ -1,16 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import JobApplicationRow from './JobApplicationRow'
 import plus_solid from './assets/plus_solid_black.svg'
+import CreateJobApplicationForm from './CreateJobApplicationForm'
 
-const JobApplicationTable = ({ applications }) => {
+const JobApplicationTable = ({ applications, fetchUserData }) => {
+  const [isCreating, setIsCreating] = useState(false)
   return (
     <div className="flex flex-col items-center bg-sky-50 p-3 shadow-lg mx-36 rounded-lg overflow-x-auto">
+      {isCreating && (
+        <CreateJobApplicationForm
+          setIsCreating={setIsCreating}
+          fetchUserData={fetchUserData}
+        />
+      )}
       <h1 className="text-xl mb-5">Job Application Table</h1>
       <div className="flex justify-center w-full flex-col">
         <div className="flex mb-2 items-center">
           <div
             className="bg-sky-600 text-white font-medium py-2 px-4 mx-1 rounded-full shadow-md h-min flex w-fit text-sm cursor-pointer hover:opacity-50"
-            onClick={() => console.log('add application clicked!')}
+            onClick={() => setIsCreating((prevState) => !prevState)}
           >
             Create
             <img
