@@ -6,7 +6,7 @@ import CreateJobApplicationForm from './CreateJobApplicationForm'
 const JobApplicationTable = ({ applications, fetchUserData }) => {
   const [isCreating, setIsCreating] = useState(false)
   return (
-    <div className="flex flex-col items-center bg-sky-50 p-3 shadow-lg mx-36 rounded-lg overflow-x-auto">
+    <div className="flex flex-col items-center bg-sky-50 p-3 shadow-lg mx-36 mb-10 rounded-lg overflow-x-auto">
       {isCreating && (
         <CreateJobApplicationForm
           setIsCreating={setIsCreating}
