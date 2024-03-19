@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import JobApplicationRow from './JobApplicationRow'
 import plus_solid from './assets/plus_solid_black.svg'
 import trashcan from './assets/trashcan.svg'
 import CreateJobApplicationForm from './CreateJobApplicationForm'
 import DeleteConfirmation from './DeleteConfirmation'
+import usePagination from './utils/usePagination'
 
 const JobApplicationTable = ({ applications, fetchUserData }) => {
   const [isCreating, setIsCreating] = useState(false)
   const [deleteIds, setDeleteIds] = useState([]) // List of application IDs to delete
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false) // Show the delete confirmation modal
+  // const [currentPage, setCurrentPage] = useState(1)
+  // const [currentData, setCurrentData] = useState([])
 
   const handleApplicationSelection = (applicationId) => {
     setDeleteIds((prevIds) => {
@@ -21,6 +24,10 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
       }
     })
   }
+
+  const itemsPerPage = 10
+  const { currentData, currentPage, totalPages, handlePageChange } =
+    usePagination(applications, itemsPerPage)
 
   return (
     <div className="flex flex-col items-center bg-sky-50 p-3 shadow-lg mx-36 mb-10 rounded-lg overflow-x-auto">
@@ -83,7 +90,7 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
             </tr>
           </thead>
           <tbody>
-            {applications.map((application) => (
+            {currentData.map((application) => (
               <JobApplicationRow
                 key={application._id}
                 application={application}
@@ -93,6 +100,26 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
             ))}
           </tbody>
         </table>
+      </div>
+      {/* Pagination controls */}
+      <div className="flex items-center justify-center mt-4">
+        <button
+          className="px-3 py-1 bg-indigo-500 text-white rounded"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <span className="mx-4">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          className="px-3 py-1 bg-indigo-500 text-white rounded"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
       </div>
     </div>
   )
