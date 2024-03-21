@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import JobApplicationRow from './JobApplicationRow'
+import React, { useState } from 'react'
+import JobApplicationViewRow from './JobApplicationViewRow'
+import JobApplicationEditRow from './JobApplicationEditRow'
 import plus_solid from './assets/plus_solid_black.svg'
 import trashcan from './assets/trashcan.svg'
 import CreateJobApplicationForm from './CreateJobApplicationForm'
@@ -7,11 +8,11 @@ import DeleteConfirmation from './DeleteConfirmation'
 import usePagination from './utils/usePagination'
 
 const JobApplicationTable = ({ applications, fetchUserData }) => {
-  const [isCreating, setIsCreating] = useState(false)
+  const [isCreating, setIsCreating] = useState(false) // Show the create form
+  const [editingId, setEditingId] = useState(false) // Show the edit form
+
   const [deleteIds, setDeleteIds] = useState([]) // List of application IDs to delete
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false) // Show the delete confirmation modal
-  // const [currentPage, setCurrentPage] = useState(1)
-  // const [currentData, setCurrentData] = useState([])
 
   const handleApplicationSelection = (applicationId) => {
     setDeleteIds((prevIds) => {
@@ -25,9 +26,17 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
     })
   }
 
+  const toggleEditMode = (id) => {
+    if (id === editingId) {
+      setEditingId(null) // cancel edit mode if the same application is clicked
+    } else {
+      setEditingId(id)
+    }
+  }
+
   const itemsPerPage = 10
   const { currentData, currentPage, totalPages, handlePageChange } =
-    usePagination(applications, itemsPerPage)
+    usePagination(applications, itemsPerPage) // Pagination logic - custom hook
 
   return (
     <div className="flex flex-col items-center bg-sky-50 p-3 shadow-lg mx-36 mb-10 rounded-lg overflow-x-auto">
@@ -54,6 +63,7 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
         }
       >
         <div className="flex mb-2 items-center">
+          {/* Show form to create a job application */}
           <div
             className="bg-sky-600 text-white font-medium py-2 px-4 mx-1 rounded-full shadow-md h-min flex w-fit text-sm cursor-pointer hover:opacity-50"
             onClick={() => setIsCreating((prevState) => !prevState)}
@@ -65,6 +75,7 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
               alt="Add Job Application"
             />
           </div>
+          {/* Show the delete button only when there are applications selected */}
           <div
             className={`${
               deleteIds.length <= 0 && 'hidden'
@@ -87,17 +98,32 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
               <th className="text-sm font-medium px-6 py-3">Job Title</th>
               <th className="text-sm font-medium px-6 py-3">Date Applied</th>
               <th className="text-sm font-medium px-6 py-3">Status</th>
+              <td className="text-sm font-medium px-6 py-3"></td>
             </tr>
           </thead>
           <tbody>
-            {currentData.map((application) => (
-              <JobApplicationRow
-                key={application._id}
-                application={application}
-                deleteIds={deleteIds}
-                handleApplicationSelection={handleApplicationSelection}
-              />
-            ))}
+            {currentData.map((application) =>
+              // If the application is being edited, show the edit form
+              editingId === application._id ? (
+                <JobApplicationEditRow
+                  key={application._id}
+                  application={application}
+                  deleteIds={deleteIds}
+                  handleApplicationSelection={handleApplicationSelection}
+                  toggleEditMode={toggleEditMode}
+                  fetchUserData={fetchUserData}
+                />
+              ) : (
+                // Otherwise, show the view form
+                <JobApplicationViewRow
+                  key={application._id}
+                  application={application}
+                  deleteIds={deleteIds}
+                  handleApplicationSelection={handleApplicationSelection}
+                  toggleEditMode={toggleEditMode}
+                />
+              )
+            )}
           </tbody>
         </table>
       </div>

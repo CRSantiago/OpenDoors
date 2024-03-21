@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import checkbox_checked from './assets/checkbox_checked.svg'
 import checkbox_unchecked from './assets/checkbox_unchecked.svg'
+import edit_icon from './assets/edit_icon.svg'
 
-const JobApplicationRow = ({
+const JobApplicationViewRow = ({
   application,
   deleteIds,
   handleApplicationSelection,
+  toggleEditMode,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
-
   const toggleExpand = () => {
     setIsExpanded(!isExpanded)
   }
@@ -38,10 +39,21 @@ const JobApplicationRow = ({
         </td>
         {/* Display only the date */}
         <td className="text-center px-6 py-3">{application.status}</td>
+        <td>
+          <img
+            src={edit_icon}
+            alt="Edit"
+            className="w-4"
+            onClick={() => {
+              console.log('editing')
+              toggleEditMode(application._id)
+            }}
+          />
+        </td>
       </tr>
       {isExpanded && (
         <tr>
-          <td colSpan="5" className="bg-gray-50 p-2 shadow-md">
+          <td colSpan="6" className="bg-gray-50 p-2 shadow-md">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <p>Source: {application.source}</p>
               <p>Location: {application.location}</p>
@@ -62,4 +74,4 @@ const JobApplicationRow = ({
   )
 }
 
-export default JobApplicationRow
+export default JobApplicationViewRow
