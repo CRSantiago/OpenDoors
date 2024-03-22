@@ -1,6 +1,6 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { useAuth } from '../AuthContext'
+import React from "react"
+import { Link } from "react-router-dom"
+import { useAuth } from "../AuthContext"
 
 const Navbar = () => {
   const { user, logout } = useAuth()
@@ -21,11 +21,20 @@ const Navbar = () => {
               Contributions
             </Link>
           </li>
-          <li className="mr-6">
-            <Link to="/auth" className="hover:bg-gray-700 p-2 rounded">
-              Login/Register
-            </Link>
-          </li>
+          {!user && (
+            <li className="mr-6">
+              <Link to="/auth" className="hover:bg-gray-700 p-2 rounded">
+                Login/Register
+              </Link>
+            </li>
+          )}
+          {user && (
+            <li className="mr-6">
+              <Link to="/dashboard" className="hover:bg-gray-700 p-2 rounded">
+                Dashboard
+              </Link>
+            </li>
+          )}
           <div className="flex items-center">
             {user && (
               <button
