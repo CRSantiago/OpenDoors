@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
-import JobApplicationViewRow from './JobApplicationViewRow'
-import JobApplicationEditRow from './JobApplicationEditRow'
-import plus_solid from './assets/plus_solid_black.svg'
-import trashcan from './assets/trashcan.svg'
-import CreateJobApplicationForm from './CreateJobApplicationForm'
-import DeleteConfirmation from './DeleteConfirmation'
-import usePagination from './utils/usePagination'
+import React, { useState } from "react"
+import JobApplicationViewRow from "./JobApplicationViewRow"
+import JobApplicationEditRow from "./JobApplicationEditRow"
+import plus_solid from "./assets/plus_solid_black.svg"
+import trashcan from "./assets/trashcan.svg"
+import CreateJobApplicationForm from "./CreateJobApplicationForm"
+import DeleteConfirmation from "./DeleteConfirmation"
+import usePagination from "./utils/usePagination"
 
 const JobApplicationTable = ({ applications, fetchUserData }) => {
   const [isCreating, setIsCreating] = useState(false) // Show the create form
@@ -13,6 +13,8 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
 
   const [deleteIds, setDeleteIds] = useState([]) // List of application IDs to delete
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false) // Show the delete confirmation modal
+
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   const handleApplicationSelection = (applicationId) => {
     setDeleteIds((prevIds) => {
@@ -34,7 +36,6 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
     }
   }
 
-  const itemsPerPage = 10
   const { currentData, currentPage, totalPages, handlePageChange } =
     usePagination(applications, itemsPerPage) // Pagination logic - custom hook
 
@@ -58,36 +59,59 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
       <div
         className={
           showDeleteConfirmation
-            ? 'filter blur-sm flex justify-center w-full flex-col'
-            : 'flex justify-center w-full flex-col'
+            ? "filter blur-sm flex justify-center w-full flex-col"
+            : "flex justify-center w-full flex-col"
         }
       >
-        <div className="flex mb-2 items-center">
-          {/* Show form to create a job application */}
-          <div
-            className="bg-sky-600 text-white font-medium py-2 px-4 mx-1 rounded-full shadow-md h-min flex w-fit text-sm cursor-pointer hover:opacity-50"
-            onClick={() => setIsCreating((prevState) => !prevState)}
-          >
-            Create
-            <img
-              className="w-3 ml-2"
-              src={plus_solid}
-              alt="Add Job Application"
-            />
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="flex items-center">
+              {/* Show form to create a job application */}
+              <div
+                className="bg-sky-600 text-white font-medium py-2 px-4 mx-1 rounded-full shadow-md h-min flex w-fit text-sm cursor-pointer hover:opacity-50"
+                onClick={() => setIsCreating((prevState) => !prevState)}
+              >
+                Create
+                <img
+                  className="w-3 ml-2"
+                  src={plus_solid}
+                  alt="Add Job Application"
+                />
+              </div>
+              {/* Show the delete button only when there are applications selected */}
+              <div
+                className={`${
+                  deleteIds.length <= 0 && "hidden"
+                } flex hover:cursor-pointer hover:opacity-60`}
+              >
+                <button
+                  className="ml-2 bg-black flex h-min w-fit font-medium py-2 px-4 mx-1 rounded-full shadow-md text-sm cursor-pointer hover:opacity-50"
+                  onClick={() => setShowDeleteConfirmation(true)}
+                >
+                  <div className="text-red-500">Delete</div>
+                  <img className="w-3 ml-2" src={trashcan} alt="Delete User" />
+                </button>
+              </div>
+            </div>
           </div>
-          {/* Show the delete button only when there are applications selected */}
-          <div
-            className={`${
-              deleteIds.length <= 0 && 'hidden'
-            } flex hover:cursor-pointer hover:opacity-60`}
-          >
-            <button
-              className="ml-2 bg-black flex h-min w-fit font-medium py-2 px-4 mx-1 rounded-full shadow-md text-sm cursor-pointer hover:opacity-50"
-              onClick={() => setShowDeleteConfirmation(true)}
+          <div className="mb-3">
+            <label
+              htmlFor="itemsPerPage"
+              className="block text-sm font-medium text-gray-700"
             >
-              <div className="text-red-500">Delete</div>
-              <img className="w-3 ml-2" src={trashcan} alt="Delete User" />
-            </button>
+              Items Per Page
+            </label>
+            <select
+              id="itemsPerPage"
+              value={itemsPerPage}
+              onChange={(e) => setItemsPerPage(Number(e.target.value))}
+              className="form-select appearance-none block w-full px-3 py-2 border border-gray-300 bg-white text-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
           </div>
         </div>
         <table className="table-auto min-w-full border-spacing-2">

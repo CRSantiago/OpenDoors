@@ -1,8 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const usePagination = (data, itemsPerPage) => {
   const [currentPage, setCurrentPage] = useState(1)
 
+  useEffect(() => {
+    // Reset to first page if itemsPerPage changes
+    setCurrentPage(1);
+  }, [itemsPerPage]);
+  
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const currentData = data.slice(startIndex, endIndex)
