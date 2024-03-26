@@ -7,7 +7,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const request = supertest(server)
-
+console.log('process.env.MONGO_URI_TEST', process.env.MONGO_URI_TEST)
 describe('User Endpoints', () => {
   let token // To store the token for authenticated requests
   let userId
