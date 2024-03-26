@@ -1,4 +1,4 @@
-import server from '../index.js' // Import your Express app
+import server from '../app.js' // Import your Express app
 import { expect } from 'chai'
 import User from '../models/user.js' // Adjust path as necessary
 import supertest from 'supertest'

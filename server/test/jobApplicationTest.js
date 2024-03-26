@@ -1,5 +1,5 @@
 // test/jobApplicationTests.js
-import server from '../index.js' // Import Express app
+import server from '../app.js' // Import Express app
 import { expect } from 'chai'
 import JobApplication from '../models/jobApplication.js'
 import supertest from 'supertest'
