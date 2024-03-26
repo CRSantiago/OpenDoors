@@ -1,5 +1,6 @@
 // test/jobApplicationTests.js
-import server from '../app.js' // Import Express app
+import server from '../app.js'
+import mongoose from 'mongoose'
 import { expect } from 'chai'
 import JobApplication from '../models/jobApplication.js'
 import supertest from 'supertest'
@@ -11,6 +12,7 @@ describe('Job Applications', () => {
   let userId
 
   before(async () => {
+    await mongoose.connect(process.env.MONGO_URI_TEST)
     // Create a test user
     await request.post('/api/users/signup').send({
       username: 'testUser',

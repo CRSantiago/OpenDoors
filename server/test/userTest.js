@@ -1,7 +1,10 @@
-import server from '../app.js' // Import your Express app
+import server from '../app.js'
+import mongoose from 'mongoose'
 import { expect } from 'chai'
-import User from '../models/user.js' // Adjust path as necessary
+import User from '../models/user.js'
 import supertest from 'supertest'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const request = supertest(server)
 
@@ -11,6 +14,7 @@ describe('User Endpoints', () => {
 
   // Clean up: Delete all users before each test to start with a fresh database
   before(async () => {
+    await mongoose.connect(process.env.MONGO_URI_TEST)
     await User.deleteMany({})
   })
 
