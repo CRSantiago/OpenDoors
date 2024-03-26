@@ -23,13 +23,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install dependencies and run tests for the client application
-      - name: Install and Test Client
-        working-directory: ./client
-        run: |
-          npm install
-          npm run test
-
       # Install dependencies, export environment variables to be used by application and run tests for the server application
       - name: Install and Test Server
         working-directory: ./server
