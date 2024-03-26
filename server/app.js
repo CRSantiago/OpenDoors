@@ -1,15 +1,13 @@
-// server/index.js
+// server/app.js
 import express from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
 import swaggerJsdoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
-import './database.js'
 import jobApplicationRoutes from './routes/jobApplications.js'
 import userRoutes from './routes/users.js'
 
 const app = express()
-const PORT = process.env.PORT || 3001
 
 // helmet middleware to secure the app by setting various HTTP headers
 app.use(helmet())
@@ -42,9 +40,5 @@ if (process.env.NODE_ENV === 'production') {
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 app.use('/api/job-applications', jobApplicationRoutes)
 app.use('/api/users', userRoutes)
-
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-)
 
 export default app
