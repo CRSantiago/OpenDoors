@@ -21,8 +21,8 @@ jobs:
       - name: Install and Test Server
         working-directory: ./server
         env: # Define environment variables for this step
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          MONGODB_URI_TEST: ${{ secrets.MONGODB_URI_TEST }}
+          MONGODB_URI: ${{ secrets.MONGO_URI }}
+          MONGODB_URI_TEST: ${{ secrets.MONGO_URI_TEST }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           npm install
