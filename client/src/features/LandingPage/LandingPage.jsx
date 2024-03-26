@@ -1,8 +1,8 @@
-import React from "react"
-import successIcon from "./assets/success.png"
-import analyzeIcon from "./assets/analyze.png"
-import trackIcon from "./assets/track.png"
-import registerIcon from "./assets/register.png"
+import React from 'react'
+import successIcon from './assets/success.png'
+import analyzeIcon from './assets/analyze.png'
+import trackIcon from './assets/track.png'
+import registerIcon from './assets/register.png'
 
 const LandingPage = () => {
   return (
@@ -146,7 +146,7 @@ const LandingPage = () => {
         </div>
       </div>
       <footer className="bg-gray-200 text-center py-4">
-        <p>© 2023 OpenDoors. All rights reserved.</p>
+        <p>© 2024 OpenDoors. All rights reserved.</p>
       </footer>
     </div>
   )
