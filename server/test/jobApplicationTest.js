@@ -1,10 +1,12 @@
 // test/jobApplicationTests.js
 import server from '../app.js'
 import mongoose from 'mongoose'
+import dotenv from 'dotenv'
 import { expect } from 'chai'
 import JobApplication from '../models/jobApplication.js'
 import supertest from 'supertest'
 
+dotenv.config()
 const request = supertest(server)
 
 describe('Job Applications', () => {
