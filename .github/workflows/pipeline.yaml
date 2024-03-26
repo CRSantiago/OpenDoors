@@ -53,7 +53,7 @@ jobs:
       # Push the Docker images to Docker Hub
       - name: Push Docker Images to Docker Hub
         run: |
-          docker push chrisantiago217/opendoorsp:client-${{github.run_number}}
+          docker push chrisantiago217/opendoors:client-${{github.run_number}}
           docker push chrisantiago217/opendoors:server-${{github.run_number}}
           docker push chrisantiago217/opendoors:client-latest
           docker push chrisantiago217/opendoors:server-latest
