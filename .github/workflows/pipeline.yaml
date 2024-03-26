@@ -26,11 +26,12 @@ jobs:
       # Install dependencies, export environment variables to be used by application and run tests for the server application
       - name: Install and Test Server
         working-directory: ./server
+        env: # Define environment variables for this step
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_URI_TEST: ${{ secrets.MONGODB_URI_TEST }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           npm install
-          export MONGODB_URI=$MONGODB_URI
-          export MONGODB_URI_TEST=$MONGODB_URI_TEST
-          export JWT_SECRET=$JWT_SECRET
           npm run test
 
       # Build a Docker image for the client application
