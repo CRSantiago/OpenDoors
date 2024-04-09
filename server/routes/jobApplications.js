@@ -37,7 +37,9 @@ router.post("/", authenticateToken, async (req, res) => {
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId // Extracted from JWT
-    const jobApplications = await JobApplication.find({ user: userId })
+    const jobApplications = await JobApplication.find({ user: userId }).sort({
+      dateApplied: -1,
+    })
     res.json(jobApplications)
   } catch (error) {
     res.status(500).send({ message: error.message })
