@@ -1,20 +1,20 @@
-import React, { useState, useMemo } from "react"
-import JobApplicationViewRow from "./JobApplicationViewRow"
-import JobApplicationEditRow from "./JobApplicationEditRow"
-import plus_solid from "./assets/plus_solid_black.svg"
-import trashcan from "./assets/trashcan.svg"
-import CreateJobApplicationForm from "./CreateJobApplicationForm"
-import DeleteConfirmation from "./DeleteConfirmation"
-import usePagination from "./utils/usePagination"
+import React, { useState, useMemo } from 'react'
+import JobApplicationViewRow from './JobApplicationViewRow'
+import JobApplicationEditRow from './JobApplicationEditRow'
+import plus_solid from './assets/plus_solid_black.svg'
+import trashcan from './assets/trashcan.svg'
+import CreateJobApplicationForm from './CreateJobApplicationForm'
+import DeleteConfirmation from './DeleteConfirmation'
+import usePagination from './utils/usePagination'
 
 const JobApplicationTable = ({ applications, fetchUserData }) => {
   const [isCreating, setIsCreating] = useState(false) // Show the create form
   const [editingId, setEditingId] = useState(false) // Show the edit form
-  const [statusFilter, setStatusFilter] = useState("All")
+  const [statusFilter, setStatusFilter] = useState('All')
   const [deleteIds, setDeleteIds] = useState([]) // List of application IDs to delete
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false) // Show the delete confirmation modal
-  const [sortDirection, setSortDirection] = useState("descending")
-
+  const [sortDirection, setSortDirection] = useState('descending')
+  const [searchQuery, setSearchQuery] = useState('')
   const [itemsPerPage, setItemsPerPage] = useState(10)
 
   const handleApplicationSelection = (applicationId) => {
@@ -43,26 +43,46 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
 
   const toggleSortDirection = () => {
     setSortDirection((currentDirection) =>
-      currentDirection === "ascending" ? "descending" : "ascending"
+      currentDirection === 'ascending' ? 'descending' : 'ascending'
     )
   }
 
-  const sortedApplications = useMemo(() => {
-    return [...applications].sort((a, b) => {
-      const dateA = new Date(a.dateApplied)
-      const dateB = new Date(b.dateApplied)
-      if (dateA < dateB) {
-        return sortDirection === "ascending" ? -1 : 1
-      }
-      if (dateA > dateB) {
-        return sortDirection === "ascending" ? 1 : -1
-      }
-      return 0
-    })
-  }, [applications, sortDirection])
+  const queriedAndSortedApplications = useMemo(() => {
+    return [...applications]
+      .filter((application) => {
+        // Return all applications if there's no search query
+        if (!searchQuery) return true
+        // query the company, job title, location, and source
+        return (
+          application.company
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          application.jobTitle
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          application.location
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          application.source.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      })
+      .sort((a, b) => {
+        // Sort by date applied
+        const dateA = new Date(a.dateApplied)
+        const dateB = new Date(b.dateApplied)
+        if (dateA < dateB) {
+          return sortDirection === 'ascending' ? -1 : 1
+        }
+        if (dateA > dateB) {
+          return sortDirection === 'ascending' ? 1 : -1
+        }
+        return 0
+      })
+  }, [applications, searchQuery, sortDirection])
 
-  const filteredApplications = sortedApplications.filter((application) =>
-    statusFilter === "All" ? true : application.status === statusFilter
+  const filteredApplications = queriedAndSortedApplications.filter(
+    (application) =>
+      statusFilter === 'All' ? true : application.status === statusFilter
   )
 
   const { currentData, currentPage, totalPages, handlePageChange } =
@@ -88,8 +108,8 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
       <div
         className={
           showDeleteConfirmation
-            ? "filter blur-sm flex justify-center w-full flex-col"
-            : "flex justify-center w-full flex-col"
+            ? 'filter blur-sm flex justify-center w-full flex-col'
+            : 'flex justify-center w-full flex-col'
         }
       >
         <div className="flex justify-between items-center">
@@ -110,7 +130,7 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
               {/* Show the delete button only when there are applications selected */}
               <div
                 className={`${
-                  deleteIds.length <= 0 && "hidden"
+                  deleteIds.length <= 0 && 'hidden'
                 } flex hover:cursor-pointer hover:opacity-60`}
               >
                 <button
@@ -123,7 +143,16 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
               </div>
             </div>
           </div>
-          <div className=" flex mb-3">
+          <div className="flex mb-3">
+            <div className="content-end mr-3">
+              <input
+                type="text"
+                placeholder="Search applications..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="p-1 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
             <div className="flex flex-col mr-2">
               <label
                 htmlFor="statusFilter"
@@ -178,7 +207,7 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
                 className="text-sm font-medium px-6 py-3 hover:cursor-pointer"
                 onClick={toggleSortDirection}
               >
-                Date Applied {sortDirection === "ascending" ? "↑" : "↓"}
+                Date Applied {sortDirection === 'ascending' ? '↑' : '↓'}
               </th>
               <th className="text-sm font-medium px-6 py-3">Status</th>
               <td className="text-sm font-medium px-6 py-3"></td>
