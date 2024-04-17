@@ -1,8 +1,10 @@
 const submitLoginForm = async (formData) => {
-  const response = await fetch('http://localhost:3001/api/users/signin', {
-    method: 'POST',
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3001'
+
+  const response = await fetch(`${apiUrl}/api/users/signin`, {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(formData),
   })
