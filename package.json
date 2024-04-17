@@ -6,7 +6,10 @@
   "scripts": {
     "start:server": "cd server && npm start",
     "start:client": "cd client && npm start",
-    "start": "concurrently \"npm run start:server\" \"npm run start:client\""
+    "start-dev": "concurrently \"npm run start:server\" \"npm run start:client\"",
+    "start": "node server/server.js",
+    "heroku-postbuild": "cd client && npm install && npm run build",
+    "build": "cd client && npm run build"
   },
   "keywords": [],
   "author": "",
