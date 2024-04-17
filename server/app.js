@@ -33,6 +33,10 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions)
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use("/api/job-applications", jobApplicationRoutes)
+app.use("/api/users", userRoutes)
+
 // Serve static files from the React app only in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")))
@@ -41,9 +45,5 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "../client/build/index.html"))
   })
 }
-
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-app.use("/api/job-applications", jobApplicationRoutes)
-app.use("/api/users", userRoutes)
 
 export default app
