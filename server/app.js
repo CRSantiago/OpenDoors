@@ -1,12 +1,16 @@
 // server/app.js
-import express from 'express'
-import helmet from 'helmet'
-import cors from 'cors'
-import path from 'path'
-import swaggerJsdoc from 'swagger-jsdoc'
-import swaggerUi from 'swagger-ui-express'
-import jobApplicationRoutes from './routes/jobApplications.js'
-import userRoutes from './routes/users.js'
+import express from "express"
+import helmet from "helmet"
+import cors from "cors"
+import path from "path"
+import swaggerJsdoc from "swagger-jsdoc"
+import swaggerUi from "swagger-ui-express"
+import jobApplicationRoutes from "./routes/jobApplications.js"
+import userRoutes from "./routes/users.js"
+import { fileURLToPath } from "url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const app = express()
 
@@ -17,29 +21,29 @@ app.use(express.json()) // Middleware to parse JSON bodies
 
 const swaggerOptions = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'OpenDoors API',
-      version: '1.0.0',
-      description: 'OpenDoors API Documentation',
+      title: "OpenDoors API",
+      version: "1.0.0",
+      description: "OpenDoors API Documentation",
     },
   },
-  apis: ['./docs/*.yaml'], // Path to the API docs
+  apis: ["./docs/*.yaml"], // Path to the API docs
 }
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions)
 
 // Serve static files from the React app only in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')))
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/build")))
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'))
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/build/index.html"))
   })
 }
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-app.use('/api/job-applications', jobApplicationRoutes)
-app.use('/api/users', userRoutes)
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use("/api/job-applications", jobApplicationRoutes)
+app.use("/api/users", userRoutes)
 
 export default app
