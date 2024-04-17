@@ -2,6 +2,7 @@
 import express from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
+import path from 'path'
 import swaggerJsdoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 import jobApplicationRoutes from './routes/jobApplications.js'
