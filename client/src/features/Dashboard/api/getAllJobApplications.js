@@ -1,9 +1,10 @@
 const getAllJobApplications = async () => {
-  const user = JSON.parse(localStorage.getItem('authState')).user
-  const reponse = await fetch('http://localhost:3001/api/job-applications', {
-    method: 'GET',
+  const user = JSON.parse(localStorage.getItem("authState")).user
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001"
+  const reponse = await fetch(`${apiUrl}/api/job-applications`, {
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${user.token}`,
     },
   })

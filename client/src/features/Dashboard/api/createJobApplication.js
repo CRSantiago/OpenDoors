@@ -1,6 +1,7 @@
 const createJobApplication = async (jobApplication) => {
   const user = JSON.parse(localStorage.getItem('authState')).user
-  const response = await fetch('http://localhost:3001/api/job-applications', {
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001"
+  const response = await fetch(`${apiUrl}/api/job-applications`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

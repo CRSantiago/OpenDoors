@@ -1,11 +1,12 @@
 const updateJobApplication = async (jobApplication) => {
-  const user = JSON.parse(localStorage.getItem('authState')).user
+  const user = JSON.parse(localStorage.getItem("authState")).user
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001"
   const response = await fetch(
-    `http://localhost:3001/api/job-applications/${jobApplication._id}`,
+    `${apiUrl}/api/job-applications/${jobApplication._id}`,
     {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${user.token}`,
       },
       body: JSON.stringify(jobApplication),
