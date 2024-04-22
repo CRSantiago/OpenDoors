@@ -7,7 +7,7 @@ import LandingPage from "./features/LandingPage/LandingPage"
 import ContributionsPage from "./features/ContributionsPage/ContributionsPage"
 import Dashboard from "./features/Dashboard/Dashboard"
 import AuthPage from "./features/Auth/AuthPage"
-import Settings from "./features/User Settings/Settings"
+import Settings from "./features/UserSettings/Settings"
 import { AuthProvider } from "./AuthContext"
 
 import "./index.css"
