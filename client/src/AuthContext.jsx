@@ -1,9 +1,9 @@
-import { createContext, useContext, useReducer, useEffect } from 'react'
+import { createContext, useContext, useReducer, useEffect } from "react"
 
 const AuthContext = createContext()
 
-const SET_USER = 'SET_USER'
-const LOGOUT = 'LOGOUT'
+const SET_USER = "SET_USER"
+const LOGOUT = "LOGOUT"
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -18,7 +18,7 @@ const authReducer = (state, action) => {
 
 export const AuthProvider = ({ children }) => {
   const initialState = () => {
-    const cachedAuthState = localStorage.getItem('authState')
+    const cachedAuthState = localStorage.getItem("authState")
     if (cachedAuthState) {
       const { user } = JSON.parse(cachedAuthState)
       return { user }
@@ -30,26 +30,36 @@ export const AuthProvider = ({ children }) => {
   // save user to local storage upon login
   const login = (user) => {
     dispatch({ type: SET_USER, payload: user })
-    localStorage.setItem('authState', JSON.stringify({ user }))
+    const expirationTime = Date.now() + user.expiresIn * 1000
+    localStorage.setItem("authState", JSON.stringify({ user }))
+    localStorage.setItem("tokenExpiration", expirationTime)
   }
 
   const updateUser = (updatedUser) => {
-    dispatch({ type: SET_USER, payload: updatedUser })
-    const storedAuthState = JSON.parse(localStorage.getItem('authState'))
-    if (storedAuthState) {
-      storedAuthState.user = updatedUser
+    const storedAuthState = JSON.parse(localStorage.getItem("authState"))
+    dispatch({
+      type: SET_USER,
+      payload: { ...storedAuthState.user, ...updatedUser },
+    })
+    if (storedAuthState && storedAuthState.user) {
+      // Merge the updated user details into the existing user object
+      storedAuthState.user = {
+        ...storedAuthState.user,
+        ...updatedUser,
+      }
     }
-    localStorage.setItem('authState', JSON.stringify(storedAuthState))
+    localStorage.setItem("authState", JSON.stringify(storedAuthState))
   }
 
   // remove user from local storage upon logout
   const logout = () => {
     dispatch({ type: LOGOUT })
-    localStorage.removeItem('authState')
+    localStorage.removeItem("authState")
+    localStorage.removeItem("tokenExpiration")
   }
 
   useEffect(() => {
-    const cachedAuthState = localStorage.getItem('authState')
+    const cachedAuthState = localStorage.getItem("authState")
     if (cachedAuthState) {
       const { user } = JSON.parse(cachedAuthState)
       dispatch({ type: SET_USER, payload: user })

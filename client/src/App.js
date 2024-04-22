@@ -1,15 +1,16 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Navbar from './components/NavBar'
-import AnimatedBackground from './components/AnimatedBackground'
-import ProtectedRoute from './components/ProtectedRoute'
-import LandingPage from './features/LandingPage/LandingPage'
-import ContributionsPage from './features/ContributionsPage/ContributionsPage'
-import Dashboard from './features/Dashboard/Dashboard'
-import AuthPage from './features/Auth/AuthPage'
-import { AuthProvider } from './AuthContext'
+import React from "react"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import Navbar from "./components/NavBar"
+import AnimatedBackground from "./components/AnimatedBackground"
+import ProtectedRoute from "./components/ProtectedRoute"
+import LandingPage from "./features/LandingPage/LandingPage"
+import ContributionsPage from "./features/ContributionsPage/ContributionsPage"
+import Dashboard from "./features/Dashboard/Dashboard"
+import AuthPage from "./features/Auth/AuthPage"
+import Settings from "./features/User Settings/Settings"
+import { AuthProvider } from "./AuthContext"
 
-import './index.css'
+import "./index.css"
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/auth" element={<AuthPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/settings" element={<Settings />} />
             </Route>
           </Routes>
         </div>

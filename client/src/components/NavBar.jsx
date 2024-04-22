@@ -29,11 +29,18 @@ const Navbar = () => {
             </li>
           )}
           {user && (
-            <li className="mr-6">
-              <Link to="/dashboard" className="hover:bg-gray-700 p-2 rounded">
-                Dashboard
-              </Link>
-            </li>
+            <>
+              <li className="mr-6">
+                <Link to="/dashboard" className="hover:bg-gray-700 p-2 rounded">
+                  Dashboard
+                </Link>
+              </li>
+              <li className="mr-6">
+                <Link to="/settings" className="hover:bg-gray-700 p-2 rounded">
+                  Settings
+                </Link>
+              </li>
+            </>
           )}
           <div className="flex items-center">
             {user && (
