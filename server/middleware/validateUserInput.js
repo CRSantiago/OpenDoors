@@ -6,7 +6,7 @@ import {
 } from "../utils/index.js"
 
 const validateUserInput = (req, res, next) => {
-  const { email, username, password } = req.body
+  const { email, username, password, newPassword } = req.body
 
   if (email && !isValidEmail(email)) {
     return res.status(400).json({ message: "Invalid email format." })
@@ -18,6 +18,12 @@ const validateUserInput = (req, res, next) => {
 
   // Password strength validation (only if password is provided in the request)
   if (password && !isPasswordStrong(password)) {
+    return res
+      .status(400)
+      .json({ message: "Password does not meet strength requirements." })
+  }
+
+  if (newPassword && !isPasswordStrong(newPassword)) {
     return res
       .status(400)
       .json({ message: "Password does not meet strength requirements." })
