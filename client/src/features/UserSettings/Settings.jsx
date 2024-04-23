@@ -1,8 +1,10 @@
-import React, { useState } from "react"
-import { FormInput, FormLabel, FormButton } from "../components"
-import { useAuth } from "../../AuthContext"
-import { isValidEmail, isValidUsername, isPasswordStrong } from "../Auth/utils"
-import { updateUserData } from "./api/updateUser"
+import React, { useState } from 'react'
+import { FormInput, FormLabel, FormButton } from '../components'
+import { useAuth } from '../../AuthContext'
+import { isValidEmail, isValidUsername } from '../Auth/utils'
+import { updateUserData } from './api/updateUser'
+import PasswordModal from './PasswordModal'
+import SuccessAnimation from '../Dashboard/SuccessAnimation'
 
 const Settings = () => {
   const { user, updateUser } = useAuth()
@@ -13,9 +15,23 @@ const Settings = () => {
   })
 
   const [fieldErrors, setFieldErrors] = useState({
-    username: "",
-    email: "",
+    username: '',
+    email: '',
   })
+
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const handleModalClose = (showSuccess = false) => {
+    setShowPasswordModal(false)
+    if (showSuccess) {
+      setShowSuccessMessage(true)
+      setTimeout(() => {
+        setShowSuccessMessage(false)
+      }, 2000) // Display success message for 2 seconds
+    }
+  }
+
+  const handleModalOpen = () => setShowPasswordModal(true)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -34,25 +50,25 @@ const Settings = () => {
       setFieldErrors((errors) => ({
         ...errors,
         username:
-          "Enter a valid username. It must be 3-20 characters long and contain only letters, numbers, underscores, or dashes.",
+          'Enter a valid username. It must be 3-20 characters long and contain only letters, numbers, underscores, or dashes.',
       }))
       return false
     } else {
       setFieldErrors((errors) => ({
         ...errors,
-        username: "",
+        username: '',
       }))
     }
     if (!isValidEmail(formData.email)) {
       setFieldErrors((errors) => ({
         ...errors,
-        email: "Enter a valid email.",
+        email: 'Enter a valid email.',
       }))
       return false
     } else {
       setFieldErrors((errors) => ({
         ...errors,
-        email: "",
+        email: '',
       }))
     }
 
@@ -67,87 +83,97 @@ const Settings = () => {
           handleEditToggle()
         })
         .catch((error) => {
-          console.error("Error creating job application", error)
+          console.error('Error creating job application', error)
         })
     }
   }
 
   return (
-    <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg mt-8">
-      <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-        User Settings
-      </h2>
-      <div className="mb-4">
-        <FormLabel
-          styles="block text-sm font-medium text-gray-700"
-          text="Username"
-          htmlFor="username"
-        />
-        {isEditing ? (
-          <FormInput
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            error={fieldErrors.username}
+    <>
+      {showPasswordModal && (
+        <PasswordModal isOpen={showPasswordModal} onClose={handleModalClose} />
+      )}
+
+      {showSuccessMessage && (
+        <SuccessAnimation message={'Password successfully updated!'} />
+      )}
+      <div className="max-w-lg mx-auto p-8 bg-white shadow-lg rounded-lg mt-8">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+          User Settings
+        </h2>
+        <div className="mb-4">
+          <FormLabel
+            styles="block text-sm font-medium text-gray-700"
+            text="Username"
+            htmlFor="username"
           />
-        ) : (
-          <p className="mt-1 text-lg text-gray-900">{user.username}</p>
-        )}
-      </div>
-      <div className="mb-6">
-        <FormLabel
-          styles="block text-sm font-medium text-gray-700"
-          text="Email"
-          htmlFor="Email"
-        />
-        {isEditing ? (
-          <FormInput
-            type="text"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            errors={fieldErrors.email}
+          {isEditing ? (
+            <FormInput
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              error={fieldErrors.username}
+            />
+          ) : (
+            <p className="mt-1 text-lg text-gray-900">{user.username}</p>
+          )}
+        </div>
+        <div className="mb-6">
+          <FormLabel
+            styles="block text-sm font-medium text-gray-700"
+            text="Email"
+            htmlFor="Email"
           />
-        ) : (
-          <p className="mt-1 text-lg text-gray-900">{user.email}</p>
-        )}
+          {isEditing ? (
+            <FormInput
+              type="text"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              errors={fieldErrors.email}
+            />
+          ) : (
+            <p className="mt-1 text-lg text-gray-900">{user.email}</p>
+          )}
+        </div>
+        <div className="flex gap-4">
+          {isEditing ? (
+            <>
+              <FormButton
+                type="submit"
+                styles=" flex-1 bg-green-500 hover:bg-green-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-md text-sm py-2 px-4"
+                text="Save"
+                handleClick={handleUpdate}
+              />
+              <FormButton
+                type="button"
+                handleClick={handleEditToggle}
+                text="Cancel"
+                styles=" flex-1 bg-red-500 hover:bg-red-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-md text-sm py-2 px-4"
+              />
+            </>
+          ) : (
+            <>
+              <FormButton
+                type="button"
+                text="Edit Information"
+                handleClick={handleEditToggle}
+                styles="flex-1 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-md text-sm py-2 px-4"
+              />
+              <FormButton
+                type="button"
+                text="Change Password"
+                styles="flex-1 text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-md text-sm py-2 px-4"
+                handleClick={handleModalOpen}
+              />
+            </>
+          )}
+        </div>
       </div>
-      <div className="flex gap-4">
-        {isEditing ? (
-          <>
-            <FormButton
-              type="submit"
-              styles=" flex-1 bg-green-500 hover:bg-green-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-md text-sm py-2 px-4"
-              text="Save"
-              handleClick={handleUpdate}
-            />
-            <FormButton
-              type="button"
-              handleClick={handleEditToggle}
-              text="Cancel"
-              styles=" flex-1 bg-red-500 hover:bg-red-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-md text-sm py-2 px-4"
-            />
-          </>
-        ) : (
-          <>
-            <FormButton
-              type="button"
-              text="Edit Information"
-              handleClick={handleEditToggle}
-              styles="flex-1 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 rounded-md text-sm py-2 px-4"
-            />
-            <FormButton
-              type="button"
-              text="Change Password"
-              styles="flex-1 text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 rounded-md text-sm py-2 px-4"
-            />
-          </>
-        )}
-      </div>
-    </div>
+    </>
   )
 }
 
