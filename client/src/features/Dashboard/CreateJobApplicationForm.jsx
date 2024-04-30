@@ -1,43 +1,44 @@
-import React, { useState } from "react"
-import { FormLabel, FormInput, FormButton } from "../components"
-import x_solid from "./assets/xmark_solid.svg"
-import SuccessAnimation from "./SuccessAnimation"
-import { createJobApplication } from "./api"
+import React, { useState } from 'react'
+import { FormLabel, FormInput, FormButton } from '../components'
+import x_solid from './assets/xmark_solid.svg'
+import SuccessAnimation from './SuccessAnimation'
+import { createJobApplication } from './api'
+import useForm from '../../hooks/useForm'
+import validateFormData from './utils/validateApplicationData.js'
 
 const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
   const statusEnum = [
-    "Applied",
-    "Assessment",
-    "Phone Screen",
-    "Interviewing",
-    "Offer",
-    "Accepted",
-    "Rejected",
+    'Applied',
+    'Assessment',
+    'Phone Screen',
+    'Interviewing',
+    'Offer',
+    'Accepted',
+    'Rejected',
   ]
-  const [formData, setFormData] = useState({
-    company: "",
-    jobTitle: "",
-    dateApplied: "",
+  const initialFormData = {
+    company: '',
+    jobTitle: '',
+    dateApplied: '',
     status: statusEnum[0],
-    source: "",
-    location: "",
-    notes: "",
-    contactEmail: "",
-    contactPhone: "",
+    source: '',
+    location: '',
+    notes: '',
+    contactEmail: '',
+    contactPhone: '',
     interviewDates: [],
-  })
-  const [fieldErrors, setFieldErrors] = useState({
-    company: "",
-    jobTitle: "",
-    dateApplied: "",
-    status: "",
-    source: "",
-    location: "",
-    notes: "",
-    contactEmail: "",
-    contactPhone: "",
-    interviewDates: [],
-  })
+  }
+
+  const {
+    formData,
+    handleChange,
+    addInterviewDate,
+    removeInterviewDate,
+    handleDateChange,
+    resetFormField,
+    fieldErrors,
+    handleValidation,
+  } = useForm(initialFormData, validateFormData)
 
   const [fieldVisibility, setFieldVisibility] = useState({
     source: false,
@@ -57,79 +58,9 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
     }))
   }
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-  }
-
-  const addInterviewDate = () => {
-    setFormData({
-      ...formData,
-      interviewDates: [
-        ...formData.interviewDates,
-        new Date().toISOString().slice(0, 10),
-      ], // Add current date as default
-    })
-  }
-
-  const removeInterviewDate = (indexToRemove) => {
-    setFormData({
-      ...formData,
-      interviewDates: formData.interviewDates.filter(
-        (_, index) => index !== indexToRemove
-      ),
-    })
-  }
-
-  const handleDateChange = (event, index) => {
-    const newDates = [...formData.interviewDates]
-    newDates[index] = event.target.value
-    setFormData({
-      ...formData,
-      interviewDates: newDates,
-    })
-  }
-
-  const validateFormData = () => {
-    if (formData.company === "") {
-      setFieldErrors((prevState) => ({
-        ...prevState,
-        company: "Company name is required",
-      }))
-      return false
-    } else {
-      setFieldErrors((prevState) => ({ ...prevState, company: "" }))
-    }
-
-    if (formData.jobTitle === "") {
-      setFieldErrors((prevState) => ({
-        ...prevState,
-        jobTitle: "Job title is required",
-      }))
-      return false
-    } else {
-      setFieldErrors((prevState) => ({ ...prevState, jobTitle: "" }))
-    }
-
-    if (formData.dateApplied === "") {
-      setFieldErrors((prevState) => ({
-        ...prevState,
-        dateApplied: "Date applied is required",
-      }))
-      return false
-    } else {
-      setFieldErrors((prevState) => ({ ...prevState, dateApplied: "" }))
-    }
-
-    return true
-  }
-
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (validateFormData()) {
+    if (handleValidation()) {
       createJobApplication(formData)
         .then((data) => {
           setIsSubmitted(true)
@@ -139,7 +70,7 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
           }, 2000)
         })
         .catch((error) => {
-          console.error("Error creating job application", error)
+          console.error('Error creating job application', error)
         })
     }
   }
@@ -147,7 +78,7 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
   return (
     <>
       {isSubmitted ? (
-        <SuccessAnimation message={"Form Submitted Successfully!"} />
+        <SuccessAnimation message={'Form Submitted Successfully!'} />
       ) : (
         <form
           className="w-1/3 max-h-[90vh] overflow-y-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white p-5 rounded-md shadow-md"
@@ -212,8 +143,8 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
                     src={x_solid}
                     alt="Close"
                     onClick={() => {
-                      handleFieldVisibility("source")
-                      setFormData({ ...formData, source: "" })
+                      handleFieldVisibility('source')
+                      resetFormField('source')
                     }}
                     className="w-2 cursor-pointer"
                   />
@@ -230,7 +161,7 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
             {!fieldVisibility.source && (
               <button
                 type="button"
-                onClick={() => handleFieldVisibility("source")}
+                onClick={() => handleFieldVisibility('source')}
                 className="bg-green-600 rounded-md p-1 my-2 cursor-pointer hover:opacity-50 text-white"
               >
                 Add Source
@@ -244,8 +175,8 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
                     src={x_solid}
                     alt="Close"
                     onClick={() => {
-                      handleFieldVisibility("location")
-                      setFormData({ ...formData, location: "" })
+                      handleFieldVisibility('location')
+                      resetFormField('location')
                     }}
                     className="w-2 cursor-pointer"
                   />
@@ -262,7 +193,7 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
             {!fieldVisibility.location && (
               <button
                 type="button"
-                onClick={() => handleFieldVisibility("location")}
+                onClick={() => handleFieldVisibility('location')}
                 className="bg-green-600 rounded-md p-1 my-2 cursor-pointer hover:opacity-50 text-white"
               >
                 Add Location
@@ -276,8 +207,8 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
                     src={x_solid}
                     alt="Close"
                     onClick={() => {
-                      handleFieldVisibility("contactEmail")
-                      setFormData({ ...formData, contactEmail: "" })
+                      handleFieldVisibility('contactEmail')
+                      resetFormField('contactEmail')
                     }}
                     className="w-2 cursor-pointer"
                   />
@@ -294,7 +225,7 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
             {!fieldVisibility.contactEmail && (
               <button
                 type="button"
-                onClick={() => handleFieldVisibility("contactEmail")}
+                onClick={() => handleFieldVisibility('contactEmail')}
                 className="bg-green-600 rounded-md p-1 my-2 cursor-pointer hover:opacity-50 text-white"
               >
                 Add Contact Email
@@ -308,8 +239,8 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
                     src={x_solid}
                     alt="Close"
                     onClick={() => {
-                      handleFieldVisibility("interviewDates")
-                      setFormData({ ...formData, interviewDates: [] })
+                      handleFieldVisibility('interviewDates')
+                      resetFormField('interviewDates')
                     }}
                     className="w-2 cursor-pointer"
                   />
@@ -343,7 +274,7 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
             {!fieldVisibility.interviewDates && (
               <button
                 type="button"
-                onClick={() => handleFieldVisibility("interviewDates")}
+                onClick={() => handleFieldVisibility('interviewDates')}
                 className="bg-green-600 rounded-md p-1 my-2 cursor-pointer hover:opacity-50 text-white"
               >
                 Add Interview Dates
@@ -357,8 +288,8 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
                     src={x_solid}
                     alt="Close"
                     onClick={() => {
-                      handleFieldVisibility("notes")
-                      setFormData({ ...formData, notes: "" })
+                      handleFieldVisibility('notes')
+                      resetFormField('notes')
                     }}
                     className="w-2 cursor-pointer"
                   />
@@ -377,7 +308,7 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
             {!fieldVisibility.notes && (
               <button
                 type="button"
-                onClick={() => handleFieldVisibility("notes")}
+                onClick={() => handleFieldVisibility('notes')}
                 className="bg-green-600 rounded-md p-1 my-2 cursor-pointer hover:opacity-50 text-white"
               >
                 Add Notes

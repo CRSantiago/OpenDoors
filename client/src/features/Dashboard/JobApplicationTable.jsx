@@ -5,7 +5,7 @@ import plus_solid from './assets/plus_solid_black.svg'
 import trashcan from './assets/trashcan.svg'
 import CreateJobApplicationForm from './CreateJobApplicationForm'
 import DeleteConfirmation from './DeleteConfirmation'
-import usePagination from './utils/usePagination'
+import usePagination from './hooks/usePagination'
 
 const JobApplicationTable = ({ applications, fetchUserData }) => {
   const [isCreating, setIsCreating] = useState(false) // Show the create form

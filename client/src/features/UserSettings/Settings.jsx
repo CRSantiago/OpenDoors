@@ -1,23 +1,28 @@
 import React, { useState } from 'react'
 import { FormInput, FormLabel, FormButton } from '../components'
 import { useAuth } from '../../AuthContext'
-import { isValidEmail, isValidUsername } from '../Auth/utils'
 import { updateUserData } from './api/updateUser'
 import PasswordModal from './PasswordModal'
 import SuccessAnimation from '../Dashboard/SuccessAnimation'
+import useForm from '../../hooks/useForm'
+import validateFormData from './utils/validateUserInfo'
 
 const Settings = () => {
   const { user, updateUser } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
-  const [formData, setFormData] = useState({
+
+  const initialFormData = {
     username: user.username,
     email: user.email,
-  })
+  }
 
-  const [fieldErrors, setFieldErrors] = useState({
-    username: '',
-    email: '',
-  })
+  const {
+    formData,
+    handleChange,
+    resetFormData,
+    fieldErrors,
+    handleValidation,
+  } = useForm(initialFormData, validateFormData)
 
   const [showPasswordModal, setShowPasswordModal] = useState(false)
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
@@ -33,50 +38,16 @@ const Settings = () => {
 
   const handleModalOpen = () => setShowPasswordModal(true)
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-  }
-
   const handleEditToggle = () => {
     setIsEditing((prevState) => !prevState)
+    if (!isEditing) {
+      resetFormData(initialFormData)
+    }
   }
 
-  const validateFormData = () => {
-    if (!isValidUsername(formData.username)) {
-      setFieldErrors((errors) => ({
-        ...errors,
-        username:
-          'Enter a valid username. It must be 3-20 characters long and contain only letters, numbers, underscores, or dashes.',
-      }))
-      return false
-    } else {
-      setFieldErrors((errors) => ({
-        ...errors,
-        username: '',
-      }))
-    }
-    if (!isValidEmail(formData.email)) {
-      setFieldErrors((errors) => ({
-        ...errors,
-        email: 'Enter a valid email.',
-      }))
-      return false
-    } else {
-      setFieldErrors((errors) => ({
-        ...errors,
-        email: '',
-      }))
-    }
-
-    return true
-  }
-
-  const handleUpdate = () => {
-    if (validateFormData()) {
+  const handleUpdate = (e) => {
+    e.preventDefault()
+    if (handleValidation()) {
       updateUserData(formData)
         .then(() => {
           updateUser(formData)
@@ -133,7 +104,7 @@ const Settings = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              errors={fieldErrors.email}
+              error={fieldErrors.email}
             />
           ) : (
             <p className="mt-1 text-lg text-gray-900">{user.email}</p>

@@ -1,10 +1,12 @@
-import React, { useState } from "react"
-import { FormInput, FormLabel, FormButton } from "../components"
-import SuccessAnimation from "./SuccessAnimation"
-import checkbox_checked from "./assets/checkbox_checked.svg"
-import checkbox_unchecked from "./assets/checkbox_unchecked.svg"
-import edit_icon from "./assets/edit_icon.svg"
-import { updateJobApplication } from "./api"
+import React, { useState } from 'react'
+import { FormInput, FormButton } from '../components'
+import SuccessAnimation from './SuccessAnimation'
+import checkbox_checked from './assets/checkbox_checked.svg'
+import checkbox_unchecked from './assets/checkbox_unchecked.svg'
+import edit_icon from './assets/edit_icon.svg'
+import { updateJobApplication } from './api'
+import useForm from '../../hooks/useForm'
+import validateFormData from './utils/validateApplicationData'
 
 const JobApplicationEditRow = ({
   application,
@@ -13,116 +15,38 @@ const JobApplicationEditRow = ({
   toggleEditMode,
   fetchUserData,
 }) => {
-  const [formData, setFormData] = useState({
-    ...application,
-  })
+  const {
+    formData,
+    handleChange,
+    addInterviewDate,
+    removeInterviewDate,
+    handleDateChange,
+    resetFormData,
+    fieldErrors,
+    handleValidation,
+  } = useForm(application, validateFormData)
 
-  const [fieldErrors, setFieldErrors] = useState({
-    company: "",
-    jobTitle: "",
-    dateApplied: "",
-    status: "",
-    source: "",
-    location: "",
-    notes: "",
-    contactEmail: "",
-    contactPhone: "",
-    interviewDates: [],
-  })
   const [isSubmitted, setIsSubmitted] = useState(false)
   const statusEnum = [
-    "Applied",
-    "Assessment",
-    "Phone Screen",
-    "Interviewing",
-    "Offer",
-    "Accepted",
-    "Rejected",
+    'Applied',
+    'Assessment',
+    'Phone Screen',
+    'Interviewing',
+    'Offer',
+    'Accepted',
+    'Rejected',
   ]
 
   // Handle the edit mode toggle and revert to original data
   const handleEditToggle = () => {
     toggleEditMode(application._id)
     // Revert to original data
-    setFormData({
-      ...application,
-    })
-  }
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-  }
-
-  const addInterviewDate = () => {
-    setFormData({
-      ...formData,
-      interviewDates: [
-        ...formData.interviewDates,
-        new Date().toISOString().slice(0, 10),
-      ], // Add current date as default
-    })
-  }
-
-  const removeInterviewDate = (indexToRemove) => {
-    setFormData({
-      ...formData,
-      interviewDates: formData.interviewDates.filter(
-        (_, index) => index !== indexToRemove
-      ),
-    })
-  }
-
-  const handleDateChange = (event, index) => {
-    const newDates = [...formData.interviewDates]
-    newDates[index] = event.target.value
-    setFormData({
-      ...formData,
-      interviewDates: newDates,
-    })
-  }
-
-  // Validate the form data for required fields
-  const validateFormData = () => {
-    if (formData.company === "") {
-      setFieldErrors((prevState) => ({
-        ...prevState,
-        company: "Company name is required",
-      }))
-      return false
-    } else {
-      setFieldErrors((prevState) => ({ ...prevState, company: "" }))
-    }
-
-    if (formData.jobTitle === "") {
-      setFieldErrors((prevState) => ({
-        ...prevState,
-        jobTitle: "Job title is required",
-      }))
-      return false
-    } else {
-      setFieldErrors((prevState) => ({ ...prevState, jobTitle: "" }))
-    }
-
-    if (formData.dateApplied === "") {
-      setFieldErrors((prevState) => ({
-        ...prevState,
-        dateApplied: "Date applied is required",
-      }))
-      return false
-    } else {
-      setFieldErrors((prevState) => ({ ...prevState, dateApplied: "" }))
-    }
-
-    return true
+    resetFormData(application)
   }
 
   const handleUpdate = (e) => {
     e.preventDefault()
-    if (validateFormData()) {
+    if (handleValidation()) {
       updateJobApplication(formData)
         .then((data) => {
           setIsSubmitted(true)
@@ -132,7 +56,7 @@ const JobApplicationEditRow = ({
           }, 2000)
         })
         .catch((error) => {
-          console.error("Error creating job application", error)
+          console.error('Error creating job application', error)
         })
     }
   }
@@ -140,7 +64,7 @@ const JobApplicationEditRow = ({
   return (
     <>
       {isSubmitted ? (
-        <SuccessAnimation message={"Application Updated Successfully!"} />
+        <SuccessAnimation message={'Application Updated Successfully!'} />
       ) : (
         <>
           <tr className="cursor-pointer hover:bg-indigo-500 hover:text-indigo-50 even:bg-sky-100">
@@ -219,7 +143,7 @@ const JobApplicationEditRow = ({
             <td colSpan="6" className="bg-gray-50 p-2 shadow-md">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <p>
-                  Source:{" "}
+                  Source:{' '}
                   <FormInput
                     id="source"
                     name="source"
@@ -229,7 +153,7 @@ const JobApplicationEditRow = ({
                   />
                 </p>
                 <p>
-                  Location:{" "}
+                  Location:{' '}
                   <FormInput
                     id="location"
                     name="location"
@@ -239,7 +163,7 @@ const JobApplicationEditRow = ({
                   />
                 </p>
                 <p>
-                  Contact Email:{" "}
+                  Contact Email:{' '}
                   <FormInput
                     id="contactEmail"
                     name="contactEmail"
@@ -249,7 +173,7 @@ const JobApplicationEditRow = ({
                   />
                 </p>
                 <p>
-                  Contact Phone:{" "}
+                  Contact Phone:{' '}
                   <FormInput
                     id="contactPhone"
                     name="contactPhone"
@@ -260,10 +184,10 @@ const JobApplicationEditRow = ({
                 </p>
                 <div className="flex flex-col">
                   <p>
-                    Interview Dates:{" "}
+                    Interview Dates:{' '}
                     {formData.interviewDates
                       .map((date) => date.substring(0, 10))
-                      .join(", ")}
+                      .join(', ')}
                   </p>
                   <button
                     type="button"
@@ -294,7 +218,7 @@ const JobApplicationEditRow = ({
                   ))}
                 </div>
                 <p>
-                  Notes:{" "}
+                  Notes:{' '}
                   <textarea
                     id="notes"
                     name="notes"

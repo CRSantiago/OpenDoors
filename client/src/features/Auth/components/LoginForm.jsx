@@ -3,17 +3,19 @@ import { useNavigate } from 'react-router-dom'
 import { FormInput, FormLabel, FormButton } from '../../components'
 import { submitLoginForm } from '../api'
 import { useAuth } from '../../../AuthContext'
+import useForm from '../../../hooks/useForm'
 
 const LoginForm = () => {
   // Get the login function from the AuthContext
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  // Store form data in state
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     username: '',
     password: '',
-  })
+  }
+
+  const { formData, handleChange } = useForm(initialFormData)
 
   // Store field errors to display in the form
   const [fieldErrors, setFieldErrors] = useState({
@@ -22,14 +24,6 @@ const LoginForm = () => {
   })
 
   const [errorMessage, setErrorMessage] = useState('')
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-  }
 
   // Handle the response from the server
   const handleFormResponse = (response) => {

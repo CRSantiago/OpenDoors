@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 
 const usePagination = (data, itemsPerPage, statusFilter) => {
   const [currentPage, setCurrentPage] = useState(1)

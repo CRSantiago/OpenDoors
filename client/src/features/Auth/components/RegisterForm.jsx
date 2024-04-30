@@ -1,58 +1,53 @@
-import React, { useState } from "react"
-import { FormInput, FormLabel, FormButton } from "../../components"
-import { submitRegistrationForm } from "../api"
-import { isValidEmail, isValidUsername, isPasswordStrong } from "../utils"
+import React, { useState } from 'react'
+import { FormInput, FormLabel, FormButton } from '../../components'
+import { submitRegistrationForm } from '../api'
+import { isValidEmail, isValidUsername, isPasswordStrong } from '../utils'
+import useForm from '../../../hooks/useForm'
 
 const RegisterForm = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  })
+  const initialFormData = {
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  }
+
+  const { formData, handleChange } = useForm(initialFormData)
 
   const [fieldErrors, setFieldErrors] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   })
 
-  const [successMessage, setSuccessMessage] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-  }
+  const [successMessage, setSuccessMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const validateFormData = () => {
     if (!isValidUsername(formData.username)) {
       setFieldErrors((errors) => ({
         ...errors,
         username:
-          "Enter a valid username. It must be 3-20 characters long and contain only letters, numbers, underscores, or dashes.",
+          'Enter a valid username. It must be 3-20 characters long and contain only letters, numbers, underscores, or dashes.',
       }))
       return false
     } else {
       setFieldErrors((errors) => ({
         ...errors,
-        username: "",
+        username: '',
       }))
     }
     if (!isValidEmail(formData.email)) {
       setFieldErrors((errors) => ({
         ...errors,
-        email: "Enter a valid email.",
+        email: 'Enter a valid email.',
       }))
       return false
     } else {
       setFieldErrors((errors) => ({
         ...errors,
-        email: "",
+        email: '',
       }))
     }
 
@@ -60,40 +55,45 @@ const RegisterForm = () => {
       setFieldErrors((errors) => ({
         ...errors,
         password:
-          "At least one uppercase letter. At least one lowercase letter. At least one digit. At least one special character. Minimum eight characters in length",
+          'At least one uppercase letter. At least one lowercase letter. At least one digit. At least one special character. Minimum eight characters in length',
       }))
       return false
     } else {
       setFieldErrors((errors) => ({
         ...errors,
-        password: "",
+        password: '',
       }))
     }
     if (formData.password !== formData.confirmPassword) {
       setFieldErrors((errors) => ({
         ...errors,
-        confirmPassword: "Passwords do not match.",
+        confirmPassword: 'Passwords do not match.',
       }))
       return false
+    } else {
+      setFieldErrors((errors) => ({
+        ...errors,
+        confirmPassword: '',
+      }))
     }
 
     return true
   }
 
   const handleFormResponse = (response) => {
-    if (response.message === "User created successfully") {
-      setSuccessMessage("Successfully created an account!")
-      setErrorMessage("")
+    if (response.message === 'User created successfully') {
+      setSuccessMessage('Successfully created an account!')
+      setErrorMessage('')
     } else if (
-      response.message.includes("duplicate") &&
-      response.message.includes("username")
+      response.message.includes('duplicate') &&
+      response.message.includes('username')
     ) {
-      setErrorMessage("There already exist an account with this username.")
+      setErrorMessage('There already exist an account with this username.')
     } else if (
-      response.message.includes("duplicate") &&
-      response.message.includes("email")
+      response.message.includes('duplicate') &&
+      response.message.includes('email')
     ) {
-      setErrorMessage("There already exist an account with this email.")
+      setErrorMessage('There already exist an account with this email.')
     } else {
       setErrorMessage(response.message)
     }
