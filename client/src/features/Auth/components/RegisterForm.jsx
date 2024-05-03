@@ -57,7 +57,8 @@ const RegisterForm = () => {
   return (
     <div className="flex  justify-center">
       <form
-        className="flex flex-col w-1/3 bg-neutral-100 p-10 shadow-lg rounded-lg"
+        className="flex flex-col w-1/3 bg-secondary
+        text-textPrimary p-10 shadow-lg rounded-lg"
         onSubmit={handleSubmit}
       >
         {successMessage && <h3 className="text-green-500">{successMessage}</h3>}
@@ -102,7 +103,7 @@ const RegisterForm = () => {
         <FormButton
           type="submit"
           text="Register"
-          styles="bg-indigo-500 text-white font-bold py-2 px-4 rounded hover:bg-indigo-600 mt-4"
+          styles="bg-brightHighlight text-white font-bold py-2 px-4 rounded hover:bg-complementary"
         />
       </form>
     </div>
