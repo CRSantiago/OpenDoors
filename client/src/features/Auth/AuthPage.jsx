@@ -10,7 +10,7 @@ const AuthPage = () => {
       {isLogin ? <LoginForm /> : <RegisterForm />}
       <button
         onClick={() => setIsLogin(!isLogin)}
-        className="my-4 font-bold text-lg"
+        className="my-4 font-bold text-lg text-darkBackground hover:underline"
       >
         {isLogin
           ? "Don't have an account yet, sign up!"

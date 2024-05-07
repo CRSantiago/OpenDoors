@@ -1,106 +1,46 @@
-import React, { useState } from 'react'
-import { FormInput, FormLabel, FormButton } from '../../components'
-import { submitRegistrationForm } from '../api'
-import { isValidEmail, isValidUsername, isPasswordStrong } from '../utils'
-import useForm from '../../../hooks/useForm'
+import React, { useState } from "react"
+import { FormInput, FormLabel, FormButton } from "../../components"
+import { submitRegistrationForm } from "../api"
+import { validateFormData } from "../utils"
+import useForm from "../../../hooks/useForm"
 
 const RegisterForm = () => {
   const initialFormData = {
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   }
 
-  const { formData, handleChange } = useForm(initialFormData)
+  const { formData, handleChange, fieldErrors, handleValidation } = useForm(
+    initialFormData,
+    validateFormData
+  )
 
-  const [fieldErrors, setFieldErrors] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  })
-
-  const [successMessage, setSuccessMessage] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-
-  const validateFormData = () => {
-    if (!isValidUsername(formData.username)) {
-      setFieldErrors((errors) => ({
-        ...errors,
-        username:
-          'Enter a valid username. It must be 3-20 characters long and contain only letters, numbers, underscores, or dashes.',
-      }))
-      return false
-    } else {
-      setFieldErrors((errors) => ({
-        ...errors,
-        username: '',
-      }))
-    }
-    if (!isValidEmail(formData.email)) {
-      setFieldErrors((errors) => ({
-        ...errors,
-        email: 'Enter a valid email.',
-      }))
-      return false
-    } else {
-      setFieldErrors((errors) => ({
-        ...errors,
-        email: '',
-      }))
-    }
-
-    if (!isPasswordStrong(formData.password)) {
-      setFieldErrors((errors) => ({
-        ...errors,
-        password:
-          'At least one uppercase letter. At least one lowercase letter. At least one digit. At least one special character. Minimum eight characters in length',
-      }))
-      return false
-    } else {
-      setFieldErrors((errors) => ({
-        ...errors,
-        password: '',
-      }))
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setFieldErrors((errors) => ({
-        ...errors,
-        confirmPassword: 'Passwords do not match.',
-      }))
-      return false
-    } else {
-      setFieldErrors((errors) => ({
-        ...errors,
-        confirmPassword: '',
-      }))
-    }
-
-    return true
-  }
+  const [successMessage, setSuccessMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
 
   const handleFormResponse = (response) => {
-    if (response.message === 'User created successfully') {
-      setSuccessMessage('Successfully created an account!')
-      setErrorMessage('')
+    if (response.message === "User created successfully") {
+      setSuccessMessage("Successfully created an account!")
+      setErrorMessage("")
     } else if (
-      response.message.includes('duplicate') &&
-      response.message.includes('username')
+      response.message.includes("duplicate") &&
+      response.message.includes("username")
     ) {
-      setErrorMessage('There already exist an account with this username.')
+      setErrorMessage("There already exist an account with this username.")
     } else if (
-      response.message.includes('duplicate') &&
-      response.message.includes('email')
+      response.message.includes("duplicate") &&
+      response.message.includes("email")
     ) {
-      setErrorMessage('There already exist an account with this email.')
+      setErrorMessage("There already exist an account with this email.")
     } else {
       setErrorMessage(response.message)
     }
   }
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (validateFormData()) {
+    if (handleValidation()) {
       const newFormData = {
         username: formData.username,
         email: formData.email,
@@ -117,7 +57,8 @@ const RegisterForm = () => {
   return (
     <div className="flex  justify-center">
       <form
-        className="flex flex-col w-1/3 bg-neutral-100 p-10 shadow-lg rounded-lg"
+        className="flex flex-col w-1/3 bg-secondary
+        text-textPrimary p-10 shadow-lg rounded-lg"
         onSubmit={handleSubmit}
       >
         {successMessage && <h3 className="text-green-500">{successMessage}</h3>}
@@ -162,7 +103,7 @@ const RegisterForm = () => {
         <FormButton
           type="submit"
           text="Register"
-          styles="bg-indigo-500 text-white font-bold py-2 px-4 rounded hover:bg-indigo-600 mt-4"
+          styles="bg-brightHighlight text-white font-bold py-2 px-4 rounded hover:bg-complementary"
         />
       </form>
     </div>

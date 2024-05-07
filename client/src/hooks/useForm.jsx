@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback } from "react"
 
 /**
  * Custom hook to handle form state and validation
@@ -6,12 +6,7 @@ import { useState, useCallback } from 'react'
  */
 const useForm = (initialFormData, validate) => {
   const [formData, setFormData] = useState(initialFormData)
-  const [fieldErrors, setFieldErrors] = useState({
-    company: '',
-    jobTitle: '',
-    dateApplied: '',
-    status: '',
-  })
+  const [fieldErrors, setFieldErrors] = useState({})
 
   const handleChange = useCallback(
     (e) => {
@@ -69,15 +64,13 @@ const useForm = (initialFormData, validate) => {
 
   // Function to handle form validation based on the validate function passed to the hook
   const handleValidation = useCallback(() => {
-    console.log('formData in hook validate', formData)
     const newErrors = validate(formData)
     setFieldErrors((prevErrors) => ({
       ...prevErrors,
       ...newErrors,
     }))
 
-    console.log(newErrors)
-    return Object.keys(newErrors).every((key) => newErrors[key] === '') // Return true if all errors are empty
+    return Object.keys(newErrors).every((key) => newErrors[key] === "") // Return true if all errors are empty
   }, [formData, validate])
 
   return {

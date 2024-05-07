@@ -14,7 +14,7 @@ const ContributionCard = ({
       </div>
       <div className="px-6 pt-4 pb-2">
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-brightHighlight text-white font-bold py-2 px-4 rounded hover:bg-complementary"
           onClick={onClickHandler}
         >
           {buttonText}

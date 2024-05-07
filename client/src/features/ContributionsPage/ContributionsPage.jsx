@@ -2,12 +2,12 @@ import React from "react"
 import ContributionCard from "./ContributionCard"
 const Contributions = () => {
   return (
-    <section className="flex items-center flex-col bg-gray-100">
+    <section className="flex items-center flex-col bg-darkBackground">
       <div className="flex items-center flex-col">
-        <h2 className="text-3xl md:text-5xl font-bold text-gray-800 my-3">
+        <h2 className="text-3xl md:text-5xl font-bold text-textPrimary my-3">
           Contribute to Our Project
         </h2>
-        <p>
+        <p className="text-textSecondary">
           We're always looking for ways to improve and would love your input and
           contributions. Here's how you can help:
         </p>

@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react'
-import './AnimatedBackground.css'
+import React, { useEffect } from "react"
 
 const AnimatedBackground = () => {
   useEffect(() => {
-    const canvas = document.getElementById('animated-background')
+    const canvas = document.getElementById("animated-background")
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext("2d")
 
     let circles = []
     const numCircles = 20
@@ -60,7 +59,7 @@ const AnimatedBackground = () => {
     drawCircles()
 
     // Resize canvas on window resize
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
     })
@@ -69,7 +68,15 @@ const AnimatedBackground = () => {
   return (
     <canvas
       id="animated-background"
-      style={{ position: 'fixed', top: 0, left: 0, zIndex: -1 }}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: -1,
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "bg-background",
+      }}
     ></canvas>
   )
 }

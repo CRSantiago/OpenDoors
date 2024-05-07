@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-import { FormButton, FormInput, FormLabel } from '../components'
-import { isPasswordStrong } from '../Auth/utils'
-import { changePassword } from './api/changePassword'
+import React, { useState } from "react"
+import { FormButton, FormInput, FormLabel } from "../components"
+import { changePassword } from "./api/changePassword"
+import useForm from "../../hooks/useForm"
+import validateFormData from "./utils/validateUserPassword"
 
 function PasswordModal({ isOpen, onClose }) {
   // Allow the user to toggle the visibility of the password fields
@@ -10,76 +11,33 @@ function PasswordModal({ isOpen, onClose }) {
   const togglePasswordVisibility = () =>
     setShowPassword((prevState) => !prevState)
 
-  const [formData, setFormData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: '',
-  })
-
-  const [fieldErrors, setFieldErrors] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: '',
-  })
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+  const initialFormData = {
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
   }
+  const {
+    formData,
+    handleChange,
+    fieldErrors,
+    resetFormData,
+    handleValidation,
+  } = useForm(initialFormData, validateFormData)
 
-  const validateFormData = () => {
-    if (!isPasswordStrong(formData.newPassword)) {
-      setFieldErrors((errors) => ({
-        ...errors,
-        newPassword:
-          'At least one uppercase letter. At least one lowercase letter. At least one digit. At least one special character. Minimum eight characters in length',
-      }))
-      return false
-    } else {
-      setFieldErrors((errors) => ({
-        ...errors,
-        newPassword: '',
-      }))
-    }
-
-    if (formData.newPassword !== formData.confirmNewPassword) {
-      setFieldErrors((errors) => ({
-        ...errors,
-        confirmNewPassword: 'Passwords do not match.',
-      }))
-      return false
-    } else {
-      setFieldErrors((errors) => ({
-        ...errors,
-        confirmNewPassword: '',
-      }))
-    }
-
-    return true
-  }
+  const [currentPasswordError, setCurrentPasswordError] = useState("")
 
   const handleFormResponse = (response) => {
-    if (response.message === 'Password successfully updated.') {
-      setFormData({
-        currentPassword: '',
-        newPassword: '',
-        confirmNewPassword: '',
-      })
+    if (response.message === "Password successfully updated.") {
+      resetFormData(initialFormData)
       onClose()
     } else {
-      setFieldErrors((errors) => ({
-        ...errors,
-        currentPassword: 'Current password is incorrect.',
-      }))
+      setCurrentPasswordError("Current password is incorrect.")
     }
   }
 
   const onSubmit = (e) => {
     e.preventDefault()
-    if (validateFormData()) {
+    if (handleValidation()) {
       const newFormData = {
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword,
@@ -100,7 +58,7 @@ function PasswordModal({ isOpen, onClose }) {
   return (
     <div
       className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-      onClick={onClose}
+      onClick={() => onClose(false)}
     >
       <div
         className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white"
@@ -110,37 +68,41 @@ function PasswordModal({ isOpen, onClose }) {
         <form className="space-y-4" onSubmit={onSubmit}>
           <div>
             <FormLabel
-              htmlFor={'currentPassword'}
-              text={'Current Password'}
-              styles={'block text-sm font-medium text-gray-700'}
+              htmlFor={"currentPassword"}
+              text={"Current Password"}
+              styles={"block text-sm font-medium text-gray-700"}
             />
             <div className="mt-1 relative flex items-start">
               <FormInput
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 id="currentPassword"
                 name="currentPassword"
                 value={formData.currentPassword}
                 onChange={handleChange}
-                error={fieldErrors.currentPassword}
+                error={
+                  currentPasswordError === ""
+                    ? fieldErrors.currentPassword
+                    : currentPasswordError
+                }
               />
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 pr-3 flex mt-2 text-sm leading-5 "
                 onClick={togglePasswordVisibility}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? "Hide" : "Show"}
               </button>
             </div>
           </div>
           <div>
             <FormLabel
-              htmlFor={'newPassword'}
-              text={'New Password'}
-              styles={'block text-sm font-medium text-gray-700'}
+              htmlFor={"newPassword"}
+              text={"New Password"}
+              styles={"block text-sm font-medium text-gray-700"}
             />
             <div className="mt-1 relative flex items-start">
               <FormInput
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 id="newPassword"
                 name="newPassword"
                 value={formData.newPassword}
@@ -152,19 +114,19 @@ function PasswordModal({ isOpen, onClose }) {
                 className="absolute inset-y-0 right-0 pr-3 flex text-sm leading-5 mt-2"
                 onClick={togglePasswordVisibility}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? "Hide" : "Show"}
               </button>
             </div>
           </div>
           <div>
             <FormLabel
-              htmlFor={'confirmNewPassword'}
-              text={'Confirm New Password'}
-              styles={'block text-sm font-medium text-gray-700'}
+              htmlFor={"confirmNewPassword"}
+              text={"Confirm New Password"}
+              styles={"block text-sm font-medium text-gray-700"}
             />
             <div className="mt-1 relative flex items-start">
               <FormInput
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 id="confirmNewPassword"
                 name="confirmNewPassword"
                 value={formData.confirmNewPassword}
@@ -176,7 +138,7 @@ function PasswordModal({ isOpen, onClose }) {
                 className="absolute inset-y-0 right-0 pr-3 flex mt-2 text-sm leading-5"
                 onClick={togglePasswordVisibility}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? "Hide" : "Show"}
               </button>
             </div>
           </div>
@@ -184,7 +146,7 @@ function PasswordModal({ isOpen, onClose }) {
             <FormButton
               type="button"
               text="Cancel"
-              handleClick={onClose}
+              handleClick={() => onClose(false)}
               styles="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
             />
             <FormButton
