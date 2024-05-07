@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema(
       { type: mongoose.Schema.Types.ObjectId, ref: 'JobApplication' },
     ],
   },
-  { collection: 'Users' }
+  { collection: 'Users' },
+  { timestamps: true }
 )
 
 const User = mongoose.model('User', userSchema)

@@ -15,7 +15,8 @@ const jobApplicationSchema = new mongoose.Schema(
     interviewDates: [{ type: Date, required: false }],
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   },
-  { collection: 'JobApplications' }
+  { collection: 'JobApplications' },
+  { timestamps: true }
 )
 
 export default mongoose.model('JobApplication', jobApplicationSchema)
