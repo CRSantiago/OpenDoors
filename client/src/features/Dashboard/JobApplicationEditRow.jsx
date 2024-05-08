@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { FormInput, FormButton } from '../components'
-import SuccessAnimation from './SuccessAnimation'
-import checkbox_checked from './assets/checkbox_checked.svg'
-import checkbox_unchecked from './assets/checkbox_unchecked.svg'
-import edit_icon from './assets/edit_icon.svg'
-import { updateJobApplication } from './api'
-import useForm from '../../hooks/useForm'
-import validateFormData from './utils/validateApplicationData'
+import React, { useState } from "react"
+import { FormInput, FormButton } from "../components"
+import SuccessAnimation from "./SuccessAnimation"
+import checkbox_checked from "./assets/checkbox_checked.svg"
+import checkbox_unchecked from "./assets/checkbox_unchecked.svg"
+import edit_icon from "./assets/edit_icon.svg"
+import { updateJobApplication } from "./api"
+import useForm from "../../hooks/useForm"
+import validateFormData from "./utils/validateApplicationData"
 
 const JobApplicationEditRow = ({
   application,
@@ -28,13 +28,13 @@ const JobApplicationEditRow = ({
 
   const [isSubmitted, setIsSubmitted] = useState(false)
   const statusEnum = [
-    'Applied',
-    'Assessment',
-    'Phone Screen',
-    'Interviewing',
-    'Offer',
-    'Accepted',
-    'Rejected',
+    "Applied",
+    "Assessment",
+    "Phone Screen",
+    "Interviewing",
+    "Offer",
+    "Accepted",
+    "Rejected",
   ]
 
   // Handle the edit mode toggle and revert to original data
@@ -56,7 +56,7 @@ const JobApplicationEditRow = ({
           }, 2000)
         })
         .catch((error) => {
-          console.error('Error creating job application', error)
+          console.error("Error creating job application", error)
         })
     }
   }
@@ -64,7 +64,7 @@ const JobApplicationEditRow = ({
   return (
     <>
       {isSubmitted ? (
-        <SuccessAnimation message={'Application Updated Successfully!'} />
+        <SuccessAnimation message={"Application Updated Successfully!"} />
       ) : (
         <>
           <tr className="cursor-pointer hover:bg-indigo-500 hover:text-indigo-50 even:bg-sky-100">
@@ -143,7 +143,7 @@ const JobApplicationEditRow = ({
             <td colSpan="6" className="bg-gray-50 p-2 shadow-md">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <p>
-                  Source:{' '}
+                  Source:{" "}
                   <FormInput
                     id="source"
                     name="source"
@@ -153,7 +153,7 @@ const JobApplicationEditRow = ({
                   />
                 </p>
                 <p>
-                  Location:{' '}
+                  Location:{" "}
                   <FormInput
                     id="location"
                     name="location"
@@ -163,7 +163,7 @@ const JobApplicationEditRow = ({
                   />
                 </p>
                 <p>
-                  Contact Email:{' '}
+                  Contact Email:{" "}
                   <FormInput
                     id="contactEmail"
                     name="contactEmail"
@@ -173,7 +173,7 @@ const JobApplicationEditRow = ({
                   />
                 </p>
                 <p>
-                  Contact Phone:{' '}
+                  Contact Phone:{" "}
                   <FormInput
                     id="contactPhone"
                     name="contactPhone"
@@ -184,10 +184,10 @@ const JobApplicationEditRow = ({
                 </p>
                 <div className="flex flex-col">
                   <p>
-                    Interview Dates:{' '}
+                    Interview Dates:{" "}
                     {formData.interviewDates
                       .map((date) => date.substring(0, 10))
-                      .join(', ')}
+                      .join(", ")}
                   </p>
                   <button
                     type="button"
@@ -218,7 +218,7 @@ const JobApplicationEditRow = ({
                   ))}
                 </div>
                 <p>
-                  Notes:{' '}
+                  Notes:{" "}
                   <textarea
                     id="notes"
                     name="notes"
@@ -227,6 +227,8 @@ const JobApplicationEditRow = ({
                     placeholder="Add any additional notes here..."
                     value={formData.notes}
                     onChange={handleChange}
+                    maxLength={1000}
+                    style={{ resize: "none" }} // Prevent resizing
                   ></textarea>
                 </p>
               </div>
