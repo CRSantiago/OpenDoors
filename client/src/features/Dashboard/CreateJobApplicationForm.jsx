@@ -302,6 +302,8 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
                   placeholder="Add any additional notes here..."
                   value={formData.notes}
                   onChange={handleChange}
+                  maxLength={1000}
+                  style={{ resize: 'none' }} // Prevent resizing
                 ></textarea>
               </div>
             )}
