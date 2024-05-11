@@ -1,15 +1,15 @@
-import React, { useState } from "react"
-import { FormInput, FormLabel, FormButton } from "../../components"
-import { submitRegistrationForm } from "../api"
-import { validateFormData } from "../utils"
-import useForm from "../../../hooks/useForm"
+import React, { useState } from 'react'
+import { FormInput, FormLabel, FormButton } from '../../components'
+import { submitRegistrationForm } from '../api'
+import { validateFormData } from '../utils'
+import useForm from '../../../hooks/useForm'
 
 const RegisterForm = () => {
   const initialFormData = {
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   }
 
   const { formData, handleChange, fieldErrors, handleValidation } = useForm(
@@ -17,23 +17,23 @@ const RegisterForm = () => {
     validateFormData
   )
 
-  const [successMessage, setSuccessMessage] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
+  const [successMessage, setSuccessMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleFormResponse = (response) => {
-    if (response.message === "User created successfully") {
-      setSuccessMessage("Successfully created an account!")
-      setErrorMessage("")
+    if (response.message === 'User created successfully') {
+      setSuccessMessage('Successfully created an account!')
+      setErrorMessage('')
     } else if (
-      response.message.includes("duplicate") &&
-      response.message.includes("username")
+      response.message.includes('duplicate') &&
+      response.message.includes('username')
     ) {
-      setErrorMessage("There already exist an account with this username.")
+      setErrorMessage('There already exist an account with this username.')
     } else if (
-      response.message.includes("duplicate") &&
-      response.message.includes("email")
+      response.message.includes('duplicate') &&
+      response.message.includes('email')
     ) {
-      setErrorMessage("There already exist an account with this email.")
+      setErrorMessage('There already exist an account with this email.')
     } else {
       setErrorMessage(response.message)
     }
@@ -55,15 +55,14 @@ const RegisterForm = () => {
     return
   }
   return (
-    <div className="flex  justify-center">
+    <div className="flex justify-center p-4">
       <form
-        className="flex flex-col w-1/3 bg-secondary
-        text-textPrimary p-10 shadow-lg rounded-lg"
+        className="flex flex-col w-full max-w-md bg-secondary text-textPrimary p-6 shadow-lg rounded-lg"
         onSubmit={handleSubmit}
       >
         {successMessage && <h3 className="text-green-500">{successMessage}</h3>}
         {errorMessage && <h3 className="text-red-500">{errorMessage}</h3>}
-        <h2 className="text-2xl font-bold mb-4">Register</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-4">Register</h2>
         <FormLabel htmlFor="username" text="Username" />
         <FormInput
           type="text"
@@ -103,7 +102,7 @@ const RegisterForm = () => {
         <FormButton
           type="submit"
           text="Register"
-          styles="bg-brightHighlight text-white font-bold py-2 px-4 rounded hover:bg-complementary"
+          styles="bg-brightHighlight text-white font-bold py-2 px-4 rounded hover:bg-complementary mt-4"
         />
       </form>
     </div>

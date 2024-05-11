@@ -89,7 +89,7 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
     usePagination(filteredApplications, itemsPerPage, statusFilter) // Pagination logic - custom hook
 
   return (
-    <div className="flex flex-col items-center bg-sky-50 p-3 shadow-lg mx-36 mb-10 rounded-lg overflow-x-auto">
+    <div className="flex flex-col items-center bg-sky-50 p-2 sm:p-3 shadow-lg mx-2 sm:mx-6 md:mx-36 mb-4 sm:mb-10 rounded-lg overflow-x-auto">
       {isCreating && (
         <CreateJobApplicationForm
           setIsCreating={setIsCreating}
@@ -112,7 +112,7 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
             : 'flex justify-center w-full flex-col'
         }
       >
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end space-y-2 sm:space-y-0 p-2">
           <div>
             <div className="flex items-center">
               {/* Show form to create a job application */}
@@ -143,7 +143,7 @@ const JobApplicationTable = ({ applications, fetchUserData }) => {
               </div>
             </div>
           </div>
-          <div className="flex mb-3">
+          <div className="flex flex-wrap mb-1 sm:mb-3">
             <div className="content-end mr-3">
               <input
                 type="text"

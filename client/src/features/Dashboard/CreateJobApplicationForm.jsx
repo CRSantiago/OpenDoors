@@ -81,7 +81,7 @@ const CreateJobApplicationForm = ({ setIsCreating, fetchUserData }) => {
         <SuccessAnimation message={'Form Submitted Successfully!'} />
       ) : (
         <form
-          className="w-1/3 max-h-[90vh] overflow-y-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white p-5 rounded-md shadow-md"
+          className="w-full sm:w-2/3 md:w-1/3 max-h-[90vh] overflow-y-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white p-5 rounded-md shadow-lg"
           onSubmit={handleSubmit}
         >
           <div className="flex justify-between mb-3 font-semibold">
