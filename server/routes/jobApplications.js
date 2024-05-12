@@ -3,6 +3,8 @@ import express from "express"
 import authenticateToken from "../middleware/authenticateToken.js"
 import JobApplication from "../models/jobApplication.js"
 import User from "../models/user.js"
+import publishMessage from "../messaging/publisher.js"
+
 const router = express.Router()
 
 // POST /api/job-applications to create a new job application
@@ -21,6 +23,12 @@ router.post("/", authenticateToken, async (req, res) => {
     // Update the User document to include the new job application ID in their jobApplications array
     await User.findByIdAndUpdate(userId, {
       $push: { jobApplications: savedJobApplication._id },
+    })
+
+    await publishMessage({
+      action: "create",
+      userId: userId,
+      details: savedJobApplication,
     })
 
     res.status(201).send({
@@ -89,6 +97,12 @@ router.put("/:id", authenticateToken, async (req, res) => {
       message: "Job application updated successfully",
       jobApplication,
     })
+
+    await publishMessage({
+      action: "update",
+      userId: userId,
+      details: jobApplication,
+    })
   } catch (error) {
     res.status(500).send({ message: error.message })
   }
@@ -111,6 +125,12 @@ router.delete("/:id", authenticateToken, async (req, res) => {
     }
 
     res.json({ message: "Job application deleted successfully" })
+
+    await publishMessage({
+      action: "delete",
+      userId: userId,
+      details: jobApplication,
+    })
   } catch (error) {
     res.status(500).send({ message: error.message })
   }
