@@ -82,26 +82,35 @@ router.put("/:id", authenticateToken, async (req, res) => {
     const { id } = req.params
     const userId = req.user.userId // Extracted from JWT
 
-    const jobApplication = await JobApplication.findOneAndUpdate(
-      { _id: id, user: userId },
-      req.body,
-      { new: true }
-    )
-    if (!jobApplication) {
+    const previousJobApplication = await JobApplication.findOne({
+      _id: id,
+      user: userId,
+    })
+
+    if (!previousJobApplication) {
       return res
         .status(404)
         .send({ message: "Job application not found or access denied" })
     }
 
+    const updatedJobApplication = await JobApplication.findOneAndUpdate(
+      { _id: id, user: userId },
+      req.body,
+      { new: true }
+    )
+
     res.json({
       message: "Job application updated successfully",
-      jobApplication,
+      updatedJobApplication,
     })
 
     await publishMessage({
       action: "update",
       userId: userId,
-      details: jobApplication,
+      details: {
+        previousStatus: previousJobApplication.status,
+        newStatus: updatedJobApplication.status,
+      },
     })
   } catch (error) {
     res.status(500).send({ message: error.message })
