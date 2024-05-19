@@ -13,6 +13,7 @@ const jobApplicationSchema = new mongoose.Schema(
     contactEmail: { type: String, required: false },
     contactPhone: { type: String, required: false },
     interviewDates: [{ type: Date, required: false }],
+    responseReceived: { type: Boolean, required: false },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   },
   { collection: 'JobApplications' },
