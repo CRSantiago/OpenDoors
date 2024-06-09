@@ -5,6 +5,9 @@ OpenDoors is a comprehensive job application tracking platform designed to simpl
 ## "Why?" (Motivation/Goal/Problem to Solve)
 Navigating through the job search process can be daunting and disorganized. With applications spread across various platforms, tracking their progress and managing related information becomes cumbersome. OpenDoors addresses these challenges by providing a centralized platform where job seekers can effortlessly track every application, follow up on leads, and prepare for interviews. Our goal is to empower users with the tools they need to manage their job search process more effectively, making it more structured and less stressful.
 
+## Architectural Design
+![opendoors-system-architecture drawio](https://github.com/CRSantiago/CRSantiago/assets/42612374/b28fc8ec-c9a1-4778-9f1c-58f44abeea50)
+
 ## Quick Start
 To get started with OpenDoors on your local machine:
 
